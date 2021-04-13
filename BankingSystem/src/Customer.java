@@ -1,7 +1,19 @@
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable{
+
+    /* // Described in DOC may want to switch to these instead;
+        Char 9 SSN
+        Char 15 Street Address
+        Char 15 City
+        Char 2 State
+        Char 5 Zip   
+        Char IO First Name
+        Char 10 Last Name
+    */
+    private static final long serialVersionUID = 1L;
     private String fname;
     private String lname;
-    private int accountNum;
     private String streetAddress;
     private String city;
     private String state;
@@ -11,9 +23,8 @@ public class Customer {
     private int SSN;
     
     
-    Customer(String fname,String lname,int accountNum,int id,int SSN,String streetAddress,String city,String state,String zip,int phoneNumber){
+    Customer(String fname,String lname,int id,int SSN,String streetAddress,String city,String state,String zip,int phoneNumber){
         this.SSN = SSN;
-        this.accountNum = accountNum;
         this.fname = fname;
         this.lname = lname;
         this.id = id;
@@ -22,10 +33,6 @@ public class Customer {
         this.state = state;
         this.zip = zip;
         this.city = city;
-    }
-
-    public int getAccountNum() {
-        return accountNum;
     }
     public int getId() {
         return id;
@@ -53,5 +60,11 @@ public class Customer {
     }
     public int getPhoneNumber() {
         return phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return this.id + this.fname + this.lname + this.streetAddress + this.city + this.state + this.zip + this.phoneNumber;
     }
 }
