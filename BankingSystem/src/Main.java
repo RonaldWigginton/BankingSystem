@@ -15,7 +15,7 @@ public class Main { // This is our Banking System
         // Show UI
 
         // Create a Customer for testing
-       Customer cus = new Customer("Ronnie","Wigginton,", 0, 0, null, null, null, null, 911); 
+        Customer cus = new Customer("Ronnie","Wigginton,", 0, 0, null, null, null, null, 911); 
         Customers[0] = cus;
         // Save a Customer 
         saveCustomers(Customers);
@@ -41,7 +41,7 @@ public class Main { // This is our Banking System
     {
         try {
             
-            FileInputStream fi = new FileInputStream(new File("Customers.txt"));
+            FileInputStream fi = new FileInputStream(new File("Database/Customers.txt"));
             ObjectInputStream oi = new ObjectInputStream(fi);
 
             // Read object(s) need to look at a loop structure for reading all objects.
@@ -66,7 +66,7 @@ public class Main { // This is our Banking System
 
     public static void saveCustomers(Customer[] Customers){ // Start of save customers 
         try {
-            FileOutputStream f = new FileOutputStream(new File("Customers.txt"));
+            FileOutputStream f = new FileOutputStream(new File("Database/Customers.txt"));
             ObjectOutputStream o = new ObjectOutputStream(f);
 
             // Write objects to file
