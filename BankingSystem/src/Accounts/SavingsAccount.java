@@ -17,6 +17,17 @@ public class SavingsAccount extends Account {
         this.dateOpened=dateOpened;
         setStatus(0);
     }
+    @Override
+    public String[] accountToArray()
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        return new String[]
+                {
+                        Integer.toString(customerId), Integer.toString(accountNumber),
+                        Double.toString(currentBalance), Double.toString(interestRate),
+                        formatter.format(dateOpened)
+                };
+    }
 
     public int getAccountNumber() {
         return accountNumber;

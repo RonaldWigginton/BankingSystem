@@ -1,73 +1,67 @@
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;        
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import Accounts.Customer;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import Accounts.Account;
 import Accounts.CheckingAccount;
+import Accounts.CustomerATM;
 import Accounts.LoanAccount;
-import Accounts.SavingsAccounts;
+import Accounts.SavingsAccount;
+import Accounts.User;
 
 
 public class Main { // This is our Banking System
     
     public static void main(String[] args) throws Exception {
 
-       static List<Account> customerList = new ArrayList<>();
-       static List<Account> loanAccounts= new ArrayList<>();
-       static List<Account> checkingAccounts=new ArrayList<>();
-       static List<Account> savingAccounts=new ArrayList<>();
+        List<Account> accountList = new ArrayList<>();
+         List<User> userList = new ArrayList<>();
+         List<Account> loanAccounts= new ArrayList<>();
+         List<Account> checkingAccounts=new ArrayList<>();
+         List<Account> savingAccounts=new ArrayList<>();
 
-       static String[] accountTypes={"none","Savings","CD","TMB","Gold/Diamond","Short Term","Long Term","Credit Card"};
 
-        File loanFile = new File("Database/loanAccounts.txt");
-        File checkingFile = new File("../bankingSystem/Database/checkingAccounts.txt");
-        File savingFile = new File("../bankingSystem/Database/savingAccounts.txt");
-        File customerFile = new File("../bankingSystem/Database/customers.txt");
+        File loanFile = new File("src/Database/loanAccounts.txt");
+        File checkingFile = new File("src/Database/checkingAccounts.txt");
+        File savingFile = new File("src/Database/savingsAccounts.txt");
+        File userFile = new File("src/Database/customers.txt");
 
        
         // load accounts into given arraylists
         loanAccounts = GetLoanData(loanFile);
         checkingAccounts = GetCheckingData(checkingFile);
         savingAccounts = GetSavingData(savingFile);
-        customerList= GetCustomerData(customerFile);
+        userList = GetUserData(userFile);
+     
 
         // Add our accounts to a accountlist
         accountList.addAll(loanAccounts);
         accountList.addAll(checkingAccounts);
         accountList.addAll(savingAccounts);
 
-        GUI Menu = new GUi();
+        GUI Menu = new GUI();
         
 
 
 
         // If we need to Save we must filter our account array list first
 
-        FilterAccounts(accountList);
         SaveAccountData(loanFile,loanAccounts);
         SaveAccountData(checkingFile,checkingAccounts);
         SaveAccountData(savingFile,savingAccounts);
-        SaveCustomerData(customerFile,customerList);
+        SaveUserData(userFile,userList);
 
        
 
     } // End of main 
-
-
-    // Loading from Database
-    public static void LoadData(){
-         GetCustomerData(customerFile);
-         GetCheckingData(checkingFile);
-         GetSavingData(savingFile);
-         GetLoanData(loanFile);
-    }
-    // Load Customer Data
-     public static List<Customer> GetCustomerData(File file){
-        var Customers = new ArrayList<User>();
+    // Load User Data
+    public static List<User> GetUserData(File file){
+        var UserAccounts = new ArrayList<User>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
         {
@@ -75,7 +69,7 @@ public class Main { // This is our Banking System
             while((line = br.readLine()) != null)
             {
                 String[] items = line.split(",");
-                Customers.add(new Customer(Integer.parseInt(items[0]), items[1], items[2], items[3], Integer.parseInt(items[4]), items[5], items[6]));
+                UserAccounts.add(new CustomerATM(Integer.parseInt(items[0]), items[1], items[2], items[3], Integer.parseInt(items[4]), items[5], items[6]));
             }
         }
         catch (Exception e)
@@ -83,8 +77,9 @@ public class Main { // This is our Banking System
             e.printStackTrace();
         }
 
-        return Customers;
+        return UserAccounts;
     }
+
     // Load Checking Acct Data
     public static List<Account> GetCheckingData(File file){
         var checkingAccounts = new ArrayList<Account>();
@@ -146,7 +141,7 @@ public class Main { // This is our Banking System
                 String[] items = line.split(",");
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
-                savingAccounts.add(new SavingAccount(Integer.parseInt(items[0]), Integer.parseInt(items[1]),
+                savingAccounts.add(new SavingsAccount(Integer.parseInt(items[0]), Integer.parseInt(items[1]),
                                                        Double.parseDouble(items[2]), Double.parseDouble(items[3]),
                                                        formatter.parse(items[4])));
             }
@@ -160,14 +155,14 @@ public class Main { // This is our Banking System
     }
 
     // Save Customer Data
-    public static void SaveCustomerData(File file, List<Customer> customers)throws IOException {
+    public static void SaveUserData(File file, List<User> users)throws IOException {
         
         FileWriter writer = new FileWriter(file);
         ArrayList<String[]> records = new ArrayList<String[]>();
 
-        for(var cust : customers)
+        for(var auser : users)
         {
-            records.add(Customer.accountToArray());
+            records.add(auser.accountToArray());
         }
 
         for(var record : records)
@@ -181,7 +176,7 @@ public class Main { // This is our Banking System
     }
 
     // Filter the accounts into before Saving Accounts
-     public static void FilterAccounts(List<Account> accounts)throws IOException {
+  /*    public static void FilterAccounts(List<Account> accounts)throws IOException {
         
         ArrayList<String[]> records = new ArrayList<String[]>();
         // sort the accounts
@@ -202,24 +197,26 @@ public class Main { // This is our Banking System
                   checkingAccounts.add(account);
              }
           } 
-        }
-}
+        } */
+
 // We can save whatever accounts we want whereever we want
  public static void SaveAccountData(File file,List<Account> accounts)throws IOException {
         
-        FileWriter writer = new FileWriter(file);
-        ArrayList<String[]> records = new ArrayList<String[]>();
-       for(var account : accounts)
-        {
-            records.add(account.accountToArray());
-        }
+    FileWriter writer = new FileWriter(file);
+    ArrayList<String[]> records = new ArrayList<String[]>();
 
-        for(var record : records)
-        {
-            writer.append(String.join(",", record));
-            writer.append("\n");
-        }
+    for(var account : accounts)
+    {
+        records.add(account.accountToArray());
+    }
 
-        writer.flush();
-        writer.close();
+    for(var record : records)
+    {
+        writer.append(String.join(",",record));
+        writer.append("\n");
+    }
+
+    writer.flush();
+    writer.close();
+    }
 }

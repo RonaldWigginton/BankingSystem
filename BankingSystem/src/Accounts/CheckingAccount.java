@@ -1,8 +1,5 @@
 package Accounts;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,7 +10,6 @@ public class CheckingAccount extends Account {
     private int backupAccountNumber;
     private int overdrafts;
     private Date dateOpened;
-
     private double interestRate;
 
     public CheckingAccount(int customerId, int accountNumber, String accountType, double currentBalance,
@@ -31,6 +27,19 @@ public class CheckingAccount extends Account {
         setStatus(0);
     }
 
+    public String[] accountToArray()
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        return new String[]
+                            {
+                                 Integer.toString(customerId), Integer.toString(accountNumber),
+                                 accountType, Double.toString(currentBalance),
+                                 Integer.toString(backupAccount), Integer.toString(backupAccountNumber),
+                                 Integer.toString(overdrafts), formatter.format(dateOpened)
+                            };
+
+    }
+    
     public int getAccountNumber() {
         return accountNumber;
     }

@@ -27,6 +27,19 @@ public class LoanAccount extends Account{
         setStatus(0);
     }
 
+    @Override
+    public String[] accountToArray()
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        return new String[]
+                {
+                        Integer.toString(customerId), Double.toString(currentBalance),
+                        Double.toString(interestRate), formatter.format(paymentDueDate),
+                        formatter.format(paymentNotificationDate), Double.toString(paymentAmountDue),
+                        loanType, Integer.toString(missedPayment ? 1 : 0), formatter.format(lastPaymentDate)
+                };
+    }
+
     public Date getPaymentDueDate() {
         return paymentDueDate;
     }

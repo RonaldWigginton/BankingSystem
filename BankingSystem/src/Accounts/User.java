@@ -1,21 +1,19 @@
 package Accounts;
 
-public class Customer {
-
- protected int customerId;
-    
-    protected String first;
-    protected String last;
+public class User {
+    protected int customerId;
     protected String status;
-    protected String type;
+    protected String type;//subtypes; here so it can be compared
     protected String address;
     protected String city;
     protected String state;
     protected int zip;
+    protected String first;
+    protected String last;
     
-    public void setStatus(int curOrbeh){
-        if(curOrbeh==0) status = "Current";
-        if(curOrbeh==1) status = "Behind";
+    public void setStatus(int cOb){
+        if(cOb==0) status = "current";
+        if(cOb==1) status = "behind";
     }
 
     public String getStatus(){
@@ -70,7 +68,7 @@ public class Customer {
         return new String[0];
     }
     public void setType(int index){
-        if(index==0)this.type="Normal";
+        if(index==0)this.type="normal";
     }
     public String getType(){
         return type;
