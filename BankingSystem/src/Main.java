@@ -25,11 +25,11 @@ public class Main { // This is our Banking System
          List<Account> checkingAccounts=new ArrayList<>();
          List<Account> savingAccounts=new ArrayList<>();
 
-
-        File loanFile = new File("src/Database/loanAccounts.txt");
-        File checkingFile = new File("src/Database/checkingAccounts.txt");
-        File savingFile = new File("src/Database/savingsAccounts.txt");
-        File userFile = new File("src/Database/customers.txt");
+        
+        File loanFile = new File("./src/Database/loanAccounts.txt");
+        File checkingFile = new File("./src/Database/checkingAccounts.txt");
+        File savingFile = new File("./src/Database/savingsAccounts.txt");
+        File userFile = new File("./src/Database/customers.txt");
 
        
         // load accounts into given arraylists
@@ -57,7 +57,7 @@ public class Main { // This is our Banking System
         SaveUserData(userFile,userList);
 
        
-
+        System.out.println("");
     } // End of main 
     // Load User Data
     public static List<User> GetUserData(File file){
