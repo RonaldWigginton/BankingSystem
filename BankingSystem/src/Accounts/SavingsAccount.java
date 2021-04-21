@@ -44,4 +44,7 @@ public class SavingsAccount extends Account {
     public void setDateOpened(Date dateOpened) {
         this.dateOpened = dateOpened;
     }
+    public String getAccountType() {
+        return "Savings";
+    }
 }

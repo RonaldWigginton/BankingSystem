@@ -60,11 +60,9 @@ public class Account {
         return new String[0];
     }
     public void setType(String type){
-        // 0 bank
-        // 1 Gold. Diamonds
         this.type=type;
     }
-    public String getType(){
+    public String getAccountType() {
         return type;
     }
 }

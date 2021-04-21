@@ -1,7 +1,15 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.xml.crypto.Data;
+
+import Accounts.*;
 
 //Written by Cassidy Edson
 public class GUI extends JPanel {
@@ -18,7 +26,7 @@ public class GUI extends JPanel {
     JButton depositButton = new JButton("Deposit");
     JButton balanceInquiry = new JButton("Balance");
 
-    //Sign In
+    //Sign In Components................................................................................................
     JPanel signInLayout = new JPanel(new BorderLayout(5, 5));
     JPanel signInInfo = new JPanel(new GridLayout(2, 2, 5, 5));
     JLabel userNameLabel = new JLabel("User Name");
@@ -27,41 +35,50 @@ public class GUI extends JPanel {
     JPasswordField passwordText = new JPasswordField();
     JButton signInSubmitButton = new JButton("Submit");
 
-    //Atm sign in
+    //Atm Sign In Components............................................................................................
     JPanel atmSignInLayout = new JPanel(new BorderLayout(5, 5));
     JPanel enteringPin = new JPanel(new GridLayout(1, 2, 5, 5));
     JLabel pinLabel = new JLabel("Enter pin:");
     JTextField pinTextField = new JTextField();
     JButton enter = new JButton("Enter");
 
-    //Atm withdraw/deposit
+    //Atm withdraw/deposit Components...................................................................................
     JPanel atmLayout = new JPanel(new BorderLayout(5, 5));
     JPanel atmChooseAccount = new JPanel(new GridLayout(1, 2, 5, 5));
     JPanel atmActions = new JPanel(new GridLayout(1, 3, 5, 5));
     JLabel chooseAccount = new JLabel("Choose account:");
 
-    //Accounts
-    JPanel accountsLayout = new JPanel(new BorderLayout(5, 5));
-    JPanel accounts = new JPanel(new GridLayout(2, 2, 5, 5));
-    String[] exampleAccounts = new String[] {"savings 1", "savings 2"};
-    String[] exChecking = new String[] {"checking 1", "checking 2"};
-    JComboBox savingsAccounts = new JComboBox(exampleAccounts);
-    JComboBox checkingAccounts = new JComboBox(exChecking);
-    JLabel savings = new JLabel("Savings Accounts:");
-    JLabel checking = new JLabel("Checking Accounts:");
-
-    //Creating accounts
-    String[] accountTypesArray = new String[] {"Savings", "Checking"};
+    //Creating Accounts Components......................................................................................
+    String[] accountTypesArray = new String[] {"Savings", "That's My Bank", "Gold/Diamond", "CD", "Long Term Loan", "Short Term Loan", "Credit Card Loan"};
     JPanel createNewAccountLayout = new JPanel(new BorderLayout(5, 5));
-    JPanel enterAccountInfo = new JPanel(new GridLayout(8, 2, 5, 5));
+    JPanel creatingAccount = new JPanel(new GridLayout(2, 1, 5, 5));
+    JPanel radioButtonsPanel = new JPanel();
+    JPanel newAccountStarting = new JPanel(new GridLayout(2, 2, 5, 5));
+    JPanel newAccountSouth = new JPanel(new GridLayout(2, 1, 5, 5));
     JComboBox accountType = new JComboBox(accountTypesArray);
+    JRadioButton newCustomerRadio = new JRadioButton("New Customer");
+    JRadioButton existingCustomerRadio = new JRadioButton("Existing Customer");
+    JLabel startingBalanceLabel = new JLabel("Starting Balance:");
+    JTextField startingBalanceText = new JTextField();
+
+    //Creating Accounts - Existing Customer
+    JPanel existingCustomer = new JPanel(new GridLayout(4, 2, 5, 5));
+    JLabel existingCustomerIDLabel = new JLabel("Customer ID:");
+    JTextField existingCustomerIDText = new JTextField();
+    JLabel backUpAccountLabel2 = new JLabel("Backup Account: ");
+    JTextField backUpAccountText2 = new JTextField();
+    JLabel backUpAccountNumberLabel2 = new JLabel("Backup Account Number:");
+    JTextField backUpAccountNumberText2 = new JTextField();
+
+    //Creating Accounts - New Customer
+    JPanel newCustomerInfo = new JPanel(new GridLayout(10, 2, 5, 5));
     JLabel firstNameLabel = new JLabel("First name:");
     JTextField firstNameText = new JTextField();
     JLabel lastNameLabel = new JLabel("Last name:");
     JTextField lastNameText = new JTextField();
     JLabel ssnLabel = new JLabel("SSN:");
     JTextField ssnText = new JTextField();
-    JLabel streetAddressLabel = new JLabel("Street Address");
+    JLabel streetAddressLabel = new JLabel("Street Address:");
     JTextField streetAddressText = new JTextField();
     JLabel cityLabel = new JLabel("City:");
     JTextField cityText = new JTextField();
@@ -69,19 +86,23 @@ public class GUI extends JPanel {
     JTextField stateText = new JTextField();
     JLabel zipLabel = new JLabel("Zip:");
     JTextField zipText = new JTextField();
-
+    JLabel backUpAccountLabel = new JLabel("Backup Account: ");
+    JTextField backUpAccountText = new JTextField();
+    JLabel backUpAccountNumberLabel = new JLabel("Backup Account Number:");
+    JTextField backUpAccountNumberText = new JTextField();
+    JLabel startingBalanceLabelNew = new JLabel("Starting balance:");
+    JTextField startingBalanceTextNew = new JTextField();
     JButton submitAccount = new JButton("Submit");
-int x = 5;
-    //Teller
+
+    //Teller Components.................................................................................................
     JPanel tellerLayout = new JPanel(new BorderLayout(5, 5));
-    JPanel enterAccountID = new JPanel(new GridLayout(1, 2, 5, 5));
+    JPanel enterAccountID = new JPanel(new GridLayout(1, 3, 5, 5));
     JPanel accountInfo = new JPanel(new GridLayout(3, 2, 5, 5));
-    JPanel tellerButtonsTop = new JPanel(new GridLayout(1, 3, 5, 5));
-    JPanel tellerButtonsBottom = new JPanel(new GridLayout(1, 2, 5, 5));
-    JPanel tellerButtons = new JPanel(new GridLayout(2, 1, 5, 5));
+    JPanel tellerAccounts = new JPanel(new GridLayout(1, 1, 15, 15));
+    JPanel tellerButtons = new JPanel(new GridLayout(2, 3, 5, 5));
     JLabel accountIDLabel = new JLabel("Account id:");
     JTextField accountIDText = new JTextField();
-    JLabel balanceLabel = new JLabel("Balance: " + x);
+    JLabel balanceLabel = new JLabel("Balance: ");
     JLabel recentDebitsLabel = new JLabel("Recent Debits: ");
     JLabel accountStatusLabel = new JLabel(" Account status: ");
     JButton transferButton = new JButton("Transfer");
@@ -89,16 +110,32 @@ int x = 5;
     JButton createNewButton = new JButton("Create New Account");
     JButton withdrawTellerButton = new JButton("Withdraw");
     JButton depositTellerButton = new JButton("Deposit");
-
-    //TEST...............................................
+    JButton stopPaymentTellerButton = new JButton("Stop Payment");
     JLabel customerIDLabelTeller = new JLabel("Customer ID:");
-    String[] test = new String[] {"Account 1", "Account 2", "Account 3"};
-    JList<String> tellerAccountList = new JList<>(test);
-    JPanel tellerAccounts = new JPanel(new GridLayout(1, 1, 15, 15));
+    JTextField customerIDTextTeller = new JTextField();
+    JButton searchTeller = new JButton("Search");
+    String[] customers;
+    String[] test = new String[] {"Accounts"};
 
-    //Manager
+    //Transfer
+    JPanel transferLayout = new JPanel(new GridLayout(2, 2, 5, 5));
+    JLabel transferToLabel = new JLabel("Transfer to:");
+    String[] transferArrayTest = new String[] {"That's My Bank 1", "That's My Bank 2", "Gold/Diamond 1"};
+    JComboBox<String> transferToCombo = new JComboBox<>(transferArrayTest);
+    JLabel transferAmountLabel = new JLabel("Transfer amount:");
+    JLabel filler = new JLabel("");
+    JTextField transferAmountText = new JTextField();
+    String[] list = new String[] {};
+    JList<String> tellerAccountList = new JList<>(test);
+
+    //Manager Components................................................................................................
     JPanel managerLayout = new JPanel(new BorderLayout(5, 5));
+    JPanel accountInfoManager = new JPanel(new GridLayout(4, 2, 5, 5));
+    JPanel managerButtons = new JPanel(new GridLayout(2, 3, 5, 5));
+    JPanel managerCustomerLookup = new JPanel(new GridLayout(1, 2, 5, 5));
+    JPanel managerAccounts = new JPanel(new GridLayout(1, 1, 15, 15));
     JLabel customerIDLabel = new  JLabel("Customer ID:");
+    JTextField customerIDTextManager = new JTextField(20);
     JLabel accountBalanceLabel = new JLabel("Account balance:");
     JLabel currentInterestRateLabel = new JLabel("Current interest rate:");
     JLabel dateOpenedLabel = new JLabel("Date opened:");
@@ -110,18 +147,21 @@ int x = 5;
     JButton setInterestRatesButton = new JButton("Set Interest");
     JButton creditButton = new JButton("Credit");
     JButton debitButton = new JButton("Debit");
+    JButton rollOverNoticeButton = new JButton("Send CD Notices");
+    JList<String> managerAccountList = new JList<>(test);
 
-    //Start
+    //Start Components..................................................................................................
     JPanel startLayout = new JPanel();
     JButton atmButton = new JButton("ATM");
     JButton signInButton = new JButton("Sign In");
 
-
-    GUI() {
+    GUI(List<Account> checkingAccounts, List<Account> savingsAccounts) {
         gui.setSize(500, 300);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //Start
+        //Get all accounts from customer id
+
+        //Start Layout..................................................................................................
         startLayout.add(atmButton);
         startLayout.add(signInButton);
 
@@ -145,7 +185,7 @@ int x = 5;
             }
         });
 
-        //Sign In
+        //Sign In Layout................................................................................................
         signInInfo.add(userNameLabel);
         signInInfo.add(userNameText);
         signInInfo.add(passwordLabel);
@@ -165,43 +205,205 @@ int x = 5;
                     gui.add(tellerLayout);
                     gui.revalidate();
                     gui.repaint();
+                } else if(username.equals("manager") && password.equals("manager")) {
+                    gui.getContentPane().removeAll();
+                    gui.add(managerLayout);
+                    gui.revalidate();
+                    gui.repaint();
                 }
             }
         });
 
-        //Teller
-        enterAccountID.add(customerIDLabel);
+        //Manager Layout................................................................................................
+        accountInfoManager.add(accountBalanceLabel);
+        accountInfoManager.add(currentInterestRateLabel);
+        accountInfoManager.add(dateOpenedLabel);
+        accountInfoManager.add(accountTypeLabel);
+        accountInfoManager.add(accountTypeLabel);
+        accountInfoManager.add(backupAccountLabel);
+        accountInfoManager.add(overdraftsLabel);
+        accountInfoManager.add(dueDateLabel);
+        accountInfoManager.setBorder(new TitledBorder(""));
+        managerButtons.add(creditButton);
+        managerButtons.add(debitButton);
+        managerButtons.add(setInterestRatesButton);
+        managerButtons.add(billingProcessButton);
+        managerButtons.add(rollOverNoticeButton);
+        managerCustomerLookup.add(customerIDLabel);
         customerIDLabel.setHorizontalAlignment(JLabel.RIGHT);
-        enterAccountID.add(accountIDText);
-        accountIDText.setHorizontalAlignment(JTextField.LEFT);
+        managerCustomerLookup.add(customerIDTextManager);
+        customerIDTextManager.setHorizontalAlignment(JTextField.LEFT);
+        managerAccounts.add(managerAccountList);
+        managerAccounts.setBorder(new TitledBorder(""));
+        managerLayout.add(managerCustomerLookup, BorderLayout.NORTH);
+        managerLayout.add(managerAccounts, BorderLayout.WEST);
+        managerLayout.add(accountInfoManager, BorderLayout.CENTER);
+        managerLayout.add(managerButtons, BorderLayout.SOUTH);
+
+        managerAccountList.setBorder(new TitledBorder(""));
+        managerAccounts.setBorder(new EmptyBorder(0, 5, 0, 5));
+        accountInfo.setBorder(new TitledBorder(""));
+
+        Border managerBorder = new TitledBorder("Accounts");
+        managerLayout.setBorder(new CompoundBorder(managerBorder, margin));
+
+        setInterestRatesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JOptionPane.showInputDialog(gui, "Interest rate", "Set Interest Rate", JOptionPane.QUESTION_MESSAGE);
+            }
+        });
+
+        billingProcessButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JOptionPane.showConfirmDialog(gui, "Are you sure you want to initiate billing?", "Initiate Billing Process", JOptionPane.OK_CANCEL_OPTION);
+            }
+        });
+
+        rollOverNoticeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JOptionPane.showConfirmDialog(gui, "Are you sure you want to send rollover notices?", "Send roll over notices", JOptionPane.OK_CANCEL_OPTION);
+            }
+        });
+
+        debitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int debitedAmount = 0;
+                boolean notNumeric = true;
+
+                //Check if input is numeric
+                while (notNumeric) {
+                    try {
+                        String debitAmount = JOptionPane.showInputDialog(gui, "Debit Amount", "Debit", JOptionPane.QUESTION_MESSAGE);
+                        if (debitAmount == null) { //If null exit loop
+                            System.out.println("null");
+                            break;
+                        } else if (debitAmount.matches("^[0-9]*$")) { //If only numeric exit loop
+                            debitedAmount = Integer.parseInt(debitAmount);
+                            notNumeric = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        break;
+                    }
+                }
+                System.out.println(debitedAmount);
+            }
+        });
+
+        creditButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int creditedAmount = 0;
+                boolean notNumeric = true;
+
+                //Check if input is numeric
+                while (notNumeric) {
+                    try {
+                        String creditAmount = JOptionPane.showInputDialog(gui, "Credit Amount", "Credit", JOptionPane.QUESTION_MESSAGE);
+                        if (creditAmount == null) { //If null exit loop
+                            System.out.println("null");
+                            break;
+                        } else if (creditAmount.matches("^[0-9]*$")) { //If only numeric exit loop
+                            creditedAmount = Integer.parseInt(creditAmount);
+                            notNumeric = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        break;
+                    }
+                }
+                System.out.println(creditedAmount);
+            }
+        });
+
+        //Teller Layout.................................................................................................
+        enterAccountID.add(customerIDLabelTeller);
+        customerIDLabelTeller.setHorizontalAlignment(JLabel.RIGHT);
+        enterAccountID.add(customerIDTextTeller);
+        customerIDTextTeller.setHorizontalAlignment(JTextField.LEFT);
+        enterAccountID.add(searchTeller);
         accountInfo.add(balanceLabel);
         balanceLabel.setHorizontalAlignment(JLabel.LEFT);
         accountInfo.add(recentDebitsLabel);
         recentDebitsLabel.setHorizontalAlignment(JLabel.LEFT);
         accountInfo.add(accountStatusLabel);
         accountStatusLabel.setHorizontalAlignment(JLabel.LEFT);
-        tellerButtonsTop.add(withdrawTellerButton);
-        tellerButtonsTop.add(depositTellerButton);
-        tellerButtonsTop.add(transferButton);
-        tellerButtonsBottom.add(deleteButton);
-        tellerButtonsBottom.add(createNewButton);
-        tellerButtons.add(tellerButtonsTop);
-        tellerButtons.add(tellerButtonsBottom);
+        tellerButtons.add(withdrawTellerButton);
+        tellerButtons.add(depositTellerButton);
+        tellerButtons.add(transferButton);
+        tellerButtons.add(deleteButton);
+        tellerButtons.add(createNewButton);
+        tellerButtons.add(stopPaymentTellerButton);
         tellerAccounts.add(tellerAccountList);
-        tellerAccounts.setBorder(new TitledBorder(""));
         tellerLayout.add(enterAccountID, BorderLayout.NORTH);
         tellerLayout.add(tellerAccounts, BorderLayout.WEST);
         tellerLayout.add(accountInfo, BorderLayout.CENTER);
         tellerLayout.add(tellerButtons, BorderLayout.SOUTH);
 
+        tellerAccountList.setBorder(new TitledBorder(""));
+        tellerAccounts.setBorder(new EmptyBorder(0, 5, 0, 5));
         accountInfo.setBorder(new TitledBorder(""));
         Border tellerBorder = new TitledBorder("Accounts");
         tellerLayout.setBorder(new CompoundBorder(tellerBorder, margin));
 
+        //Transfer Button
+        transferLayout.add(transferToLabel);
+        transferLayout.add(transferToCombo);
+        transferLayout.add(transferAmountLabel);
+        transferLayout.add(transferAmountText);
+
+        transferButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                JOptionPane.showConfirmDialog(gui, transferLayout, "Transfer", JOptionPane.OK_CANCEL_OPTION);
+            }
+        });
+
+        //Breaks search currently
+        tellerAccountList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                String tellerAccount = tellerAccountList.getSelectedValue();
+                //Fix this.......................confused when searching cause it doesn't have value to pull from
+                try {
+                    String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
+                    int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
+
+                    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+                } catch (NullPointerException E) {
+
+                }
+
+                gui.revalidate();
+                gui.repaint();
+            }
+        });
+
+        //Finish.......................................................................................................................................
+        searchTeller.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                int customerID = Integer.parseInt(customerIDTextTeller.getText());
+//                tellerAccounts.removeAll();
+//                tellerAccountList = new JList<>(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
+//                tellerAccounts.add(tellerAccountList);
+
+                tellerAccountList.setListData(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
+
+                gui.revalidate();
+                gui.repaint();
+
+
+            }
+        });
+
+        //Deposits money into selected account in Teller Interface
         depositTellerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 int depositedAmount = 0;
                 boolean notNumeric = true;
+                String tellerAccount = tellerAccountList.getSelectedValue();
+                String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
+                int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
+                System.out.println(accountNumber);
 
                 //Check if input is numeric
                 while (notNumeric) {
@@ -218,14 +420,22 @@ int x = 5;
                         break;
                     }
                 }
-                System.out.println(depositedAmount);
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).deposit(depositedAmount);
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
             }
         });
 
+        //Withdraws money from selected account in Teller Interface
         withdrawTellerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                int depositedAmount = 0;
+                int withdrawnAmount = 0;
                 boolean notNumeric = true;
+                String tellerAccount = tellerAccountList.getSelectedValue();
+                String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
+                int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
 
                 //Check if input is numeric
                 while (notNumeric) {
@@ -235,17 +445,22 @@ int x = 5;
                             System.out.println("null");
                             break;
                         } else if (depositAmount.matches("^[0-9]*$")) { //If only numeric exit loop
-                            depositedAmount = Integer.parseInt(depositAmount);
+                            withdrawnAmount = Integer.parseInt(depositAmount);
                             notNumeric = false;
                         }
                     } catch (NumberFormatException e) {
                         break;
                     }
                 }
-                System.out.println(depositedAmount);
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).withdraw(withdrawnAmount);
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
             }
         });
 
+        //Deletes selected account in Teller Interface
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 int deleteConfirm = JOptionPane.YES_NO_OPTION;
@@ -266,32 +481,129 @@ int x = 5;
             }
         });
 
-        //Create new account
-        enterAccountInfo.add(firstNameLabel);
-        enterAccountInfo.add(firstNameText);
-        enterAccountInfo.add(lastNameLabel);
-        enterAccountInfo.add(lastNameText);
-        enterAccountInfo.add(ssnLabel);
-        enterAccountInfo.add(ssnText);
-        enterAccountInfo.add(streetAddressLabel);
-        enterAccountInfo.add(streetAddressText);
-        enterAccountInfo.add(cityLabel);
-        enterAccountInfo.add(cityText);
-        enterAccountInfo.add(stateLabel);
-        enterAccountInfo.add(stateText);
-        enterAccountInfo.add(zipLabel);
-        enterAccountInfo.add(zipText);
-        createNewAccountLayout.add(accountType, BorderLayout.NORTH);
-        createNewAccountLayout.add(enterAccountInfo, BorderLayout.CENTER);
+        //Gets check number to be stopped
+        stopPaymentTellerButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                int checkNumber = 0;
+                boolean notNumeric = true;
+
+                //Check if input is numeric
+                while (notNumeric) {
+                    try {
+                        String enteredCheckNumber = JOptionPane.showInputDialog(gui, "Check number", "Stop Payment", JOptionPane.QUESTION_MESSAGE);
+                        if (enteredCheckNumber == null) { //If null exit loop
+                            break;
+                        } else if (enteredCheckNumber.matches("^[0-9]*$")) { //If only numeric exit loop
+                            checkNumber = Integer.parseInt(enteredCheckNumber);
+                            notNumeric = false;
+                        }
+                    } catch (NumberFormatException e) {
+                        break;
+                    }
+                }
+            }
+        });
+
+        //Create new account Layout.....................................................................................
+        newCustomerInfo.add(firstNameLabel);
+        newCustomerInfo.add(firstNameText);
+        newCustomerInfo.add(lastNameLabel);
+        newCustomerInfo.add(lastNameText);
+        newCustomerInfo.add(ssnLabel);
+        newCustomerInfo.add(ssnText);
+        newCustomerInfo.add(streetAddressLabel);
+        newCustomerInfo.add(streetAddressText);
+        newCustomerInfo.add(cityLabel);
+        newCustomerInfo.add(cityText);
+        newCustomerInfo.add(stateLabel);
+        newCustomerInfo.add(stateText);
+        newCustomerInfo.add(zipLabel);
+        newCustomerInfo.add(zipText);
+        newCustomerInfo.add(backUpAccountLabel);
+        newCustomerInfo.add(backUpAccountText);
+        newCustomerInfo.add(backUpAccountNumberLabel);
+        newCustomerInfo.add(backUpAccountNumberText);
+        newCustomerInfo.add(startingBalanceLabelNew);
+        newCustomerInfo.add(startingBalanceTextNew);
+        existingCustomer.add(existingCustomerIDLabel);
+        existingCustomer.add(existingCustomerIDText);
+        existingCustomer.add(backUpAccountLabel2);
+        existingCustomer.add(backUpAccountText2);
+        existingCustomer.add(backUpAccountNumberLabel2);
+        existingCustomer.add(backUpAccountNumberText2);
+        existingCustomer.add(startingBalanceLabel);
+        existingCustomer.add(startingBalanceText);
+        radioButtonsPanel.add(newCustomerRadio);
+        radioButtonsPanel.add(existingCustomerRadio);
+        creatingAccount.add(accountType);
+        creatingAccount.add(radioButtonsPanel);
+        newAccountSouth.add(newAccountStarting);
+        newAccountSouth.add(submitAccount);
+        createNewAccountLayout.add(creatingAccount, BorderLayout.NORTH);
         createNewAccountLayout.add(submitAccount, BorderLayout.SOUTH);
 
         Border createAccountBorder = new TitledBorder("Create Account");
         createNewAccountLayout.setBorder(new CompoundBorder(createAccountBorder, margin));
 
-        //Transaction
-        JPanel transactionLayout = new JPanel();
+        //Creates new account and adds to array
+        submitAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                String type = accountType.getSelectedItem().toString();
+                int customerID;
+                double currentBalance;
+                int backUpAccount;
+                int backUpAccountNumber;
 
-        //Atm sign in
+                if(existingCustomerRadio.isSelected()) {
+                    customerID = Integer.parseInt(existingCustomerIDText.getText());
+                    currentBalance = Double.parseDouble(startingBalanceText.getText());
+                    backUpAccount = Integer.parseInt(backUpAccountText2.getText());
+                    backUpAccountNumber = Integer.parseInt(backUpAccountNumberText2.getText());
+                } else {
+                    customerID = Integer.parseInt(ssnText.getText());
+                    currentBalance = Double.parseDouble(startingBalanceTextNew.getText());
+                    backUpAccount = Integer.parseInt(backUpAccountText.getText());
+                    backUpAccountNumber = Integer.parseInt(backUpAccountNumberText.getText());
+                }
+
+                createNewAccount(savingsAccounts, checkingAccounts, type, customerID, currentBalance, backUpAccount, backUpAccountNumber);
+            }
+        });
+
+        //Adds panel to create new customer or add account to existing customer
+        newCustomerRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                if(newCustomerRadio.isSelected()) {
+                    createNewAccountLayout.add(newCustomerInfo, BorderLayout.CENTER);
+                    gui.revalidate();
+                    gui.repaint();
+                    existingCustomerRadio.setEnabled(false);
+                } else {
+                    createNewAccountLayout.remove(newCustomerInfo);
+                    gui.revalidate();
+                    gui.repaint();
+                    existingCustomerRadio.setEnabled(true);
+                }
+            }
+        });
+
+        existingCustomerRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                if(existingCustomerRadio.isSelected()) {
+                    createNewAccountLayout.add(existingCustomer, BorderLayout.CENTER);
+                    gui.revalidate();
+                    gui.repaint();
+                    newCustomerRadio.setEnabled(false);
+                } else {
+                    createNewAccountLayout.remove(existingCustomer);
+                    gui.revalidate();
+                    gui.repaint();
+                    newCustomerRadio.setEnabled(true);
+                }
+            }
+        });
+
+        //Atm sign in Layout............................................................................................
         enteringPin.add(pinLabel);
         enteringPin.add(pinTextField);
         atmSignInLayout.add(enteringPin, BorderLayout.NORTH);
@@ -306,11 +618,14 @@ int x = 5;
                     gui.add(atmLayout);
                     gui.revalidate();
                     gui.repaint();
+                } else {
+                    JOptionPane.showMessageDialog(gui, "Please enter a valid pin", "Invalid Pin", JOptionPane.ERROR_MESSAGE);
+                    pinTextField.setText("");
                 }
             }
         });
 
-        //Atm withdraw/deposit
+        //Atm withdraw/deposit Layout...................................................................................
         atmChooseAccount.add(chooseAccount);
         atmChooseAccount.add(accountsDropDown);
         atmActions.add(withdrawButton);
@@ -323,19 +638,6 @@ int x = 5;
         atmLayout.setBorder(new CompoundBorder(atmBorder, margin));
 
         atmSignInLayout.setBorder(new CompoundBorder(atmBorder, margin));
-
-        //Accounts
-        accounts.add(savings);
-        accounts.add(savingsAccounts);
-        accounts.add(checking);
-        accounts.add(checkingAccounts);
-        navigation.add(home);
-        navigation.add(exit);
-        accountsLayout.add(accounts, BorderLayout.NORTH);
-        accountsLayout.add(navigation, BorderLayout.SOUTH);
-
-        Border accountsBorder = new TitledBorder("Accounts");
-        accountsLayout.setBorder(new CompoundBorder(accountsBorder, margin));
 
         //Gets amount to be withdrawn when withdraw button is clicked
         withdrawButton.addActionListener(new java.awt.event.ActionListener() {
@@ -397,11 +699,89 @@ int x = 5;
 
         gui.setLayout(flow);
         //Change this to where you want to GUI to start from
-        gui.add(atmLayout);
+        gui.add(tellerLayout);
         gui.setVisible(true);
     }
 
     public static void main(String[] args) {
-        new GUI();
+        List<Account> accountList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
+        List<Account> loanAccounts= new ArrayList<>();
+        List<Account> checkingAccounts=new ArrayList<>();
+        List<Account> savingsAccounts=new ArrayList<>();
+        
+        userList = Database.GetUserData();  // RW
+        loanAccounts = Database.GetLoanData(); // RW
+        savingsAccounts = Database.GetSavingData();// RW
+        checkingAccounts = Database.GetCheckingData();// RW
+
+        accountList.addAll(loanAccounts);// RW
+        accountList.addAll((checkingAccounts));// RW
+        accountList.addAll((savingsAccounts));// RW
+    
+        new GUI(checkingAccounts, savingsAccounts);
+    }
+
+    public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber) {
+        int savingsAccountNumber = savingsAccounts.size() + 1;
+        int checkingAccountNumber = checkingAccounts.size() + 1;
+        double interestRate = 1.0;
+
+        if(accountType.equals("Savings")) {
+            savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date()));
+            savingsAccountNumber++;
+        } else if(accountType.equals("That's My Bank") || accountType.equals("Gold/Diamond")) {
+            checkingAccounts.add(new CheckingAccount(customerId, checkingAccountNumber, accountType, currentBalance, backUpAccount, backUpAccountNumber, 0, new Date()));
+            checkingAccountNumber++;
+        } else if(accountType.equals("CD")) {
+
+        } else if(accountType.equals("Long Term Loan")) {
+
+        } else if(accountType.equals("Short Term Loan")) {
+
+        } else if(accountType.equals("Credit Card Loan")) {
+
+        }
+    }
+
+    public String[] getAccountNumber(List<Account> savingsAccounts, List<Account> checkingAccounts, int customerId) {
+        ArrayList<String> accountTypes = new ArrayList<>();
+        String[] accountTypesReturn;
+
+        for(int i = 0; i < savingsAccounts.size(); i++) {
+            if(savingsAccounts.get(i).getCustomerId() == customerId) {
+                accountTypes.add("Savings " + Integer.toString(savingsAccounts.get(i).getAccountNumber()));
+            }
+        }
+
+        for(int i = 0; i < checkingAccounts.size(); i++) {
+            if(checkingAccounts.get(i).getCustomerId() == customerId) {
+                accountTypes.add(checkingAccounts.get(i).getAccountType() + " " + Integer.toString(checkingAccounts.get(i).getAccountNumber()));
+            }
+        }
+
+        accountTypesReturn = accountTypes.toArray(new String[0]);
+
+        return accountTypesReturn;
+    }
+
+    public Account getAccount(List<Account> savings, List<Account> checking, String accountType, int accountNumber) {
+        Account account = null;
+        if(accountType.equals("Savings")) {
+            for (int i = 0; i < savings.size(); i++) {
+                if (savings.get(i).getAccountNumber() == accountNumber) {
+                    account = savings.get(i);
+                }
+            }
+        }
+
+        if(accountType.equals("TMB") || accountType.equals("Gold/Diamond")) {
+            for (int i = 0; i < checking.size(); i++) {
+                if (checking.get(i).getAccountNumber() == accountNumber) {
+                    account = checking.get(i);
+                }
+            }
+        }
+        return account;
     }
 }
