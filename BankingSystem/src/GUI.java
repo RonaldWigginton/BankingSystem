@@ -7,7 +7,6 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.xml.crypto.Data;
 
 import Accounts.*;
 //Written by Cassidy Edson
@@ -103,7 +102,7 @@ public class GUI extends JPanel {
     JTextField accountIDText = new JTextField();
     JLabel balanceLabel = new JLabel("Balance: ");
     JLabel recentDebitsLabel = new JLabel("Recent Debits: ");
-    JLabel accountStatusLabel = new JLabel(" Account status: ");
+    JLabel accountStatusLabel = new JLabel("Account status: ");
     JButton transferButton = new JButton("Transfer");
     JButton deleteButton = new JButton("Delete Account");
     JButton createNewButton = new JButton("Create New Account");
@@ -115,6 +114,20 @@ public class GUI extends JPanel {
     JButton searchTeller = new JButton("Search");
     String[] customers;
     String[] test = new String[] {"Accounts"};
+    //Type means check, payment made to credit card, ect
+    String[] columnNames = new String[] {"Type", "Amount", "Date"};
+    String[][] recentDebitsData = new String[][] {
+            {"Check", "50.00", "5/14/2021"},
+            {"Check Payment", "250.00", "4/4/2021"},
+            {"test", "5", "4/1/2021"},
+            {"Check", "2", "4/1/2021"},
+            {"Check", "6", "4/1/2021"},
+            {"Credit Cards", "50", "3/30/2021"}
+    };
+    JTable tellerRecentDebits = new JTable(recentDebitsData, columnNames);
+
+    JScrollPane tablePane = new JScrollPane(tellerRecentDebits);
+    JPanel tester = new JPanel(new GridLayout(2, 1, 5, 5));
 
     //Transfer
     JPanel transferLayout = new JPanel(new GridLayout(2, 2, 5, 5));
@@ -155,7 +168,7 @@ public class GUI extends JPanel {
     JButton signInButton = new JButton("Sign In");
 
     GUI(List<Account> checkingAccounts, List<Account> savingsAccounts) {
-        gui.setSize(500, 300);
+        gui.setSize(500, 335);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Get all accounts from customer id
@@ -241,7 +254,7 @@ public class GUI extends JPanel {
 
         managerAccountList.setBorder(new TitledBorder(""));
         managerAccounts.setBorder(new EmptyBorder(0, 5, 0, 5));
-        accountInfo.setBorder(new TitledBorder(""));
+        accountInfoManager.setBorder(new TitledBorder(""));
 
         Border managerBorder = new TitledBorder("Accounts");
         managerLayout.setBorder(new CompoundBorder(managerBorder, margin));
@@ -320,10 +333,10 @@ public class GUI extends JPanel {
         enterAccountID.add(searchTeller);
         accountInfo.add(balanceLabel);
         balanceLabel.setHorizontalAlignment(JLabel.LEFT);
-        accountInfo.add(recentDebitsLabel);
-        recentDebitsLabel.setHorizontalAlignment(JLabel.LEFT);
         accountInfo.add(accountStatusLabel);
         accountStatusLabel.setHorizontalAlignment(JLabel.LEFT);
+        accountInfo.add(recentDebitsLabel);
+        recentDebitsLabel.setHorizontalAlignment(JLabel.LEFT);
         tellerButtons.add(withdrawTellerButton);
         tellerButtons.add(depositTellerButton);
         tellerButtons.add(transferButton);
@@ -331,14 +344,23 @@ public class GUI extends JPanel {
         tellerButtons.add(createNewButton);
         tellerButtons.add(stopPaymentTellerButton);
         tellerAccounts.add(tellerAccountList);
+
+        tester.add(accountInfo);
+        tester.add(tablePane);
+        tablePane.setPreferredSize(new Dimension(50, 50));
+        tablePane.setMaximumSize(new Dimension(50, 50));
+        tablePane.setMinimumSize(new Dimension(50, 50));
+
         tellerLayout.add(enterAccountID, BorderLayout.NORTH);
         tellerLayout.add(tellerAccounts, BorderLayout.WEST);
-        tellerLayout.add(accountInfo, BorderLayout.CENTER);
+        tellerLayout.add(tester, BorderLayout.CENTER);
         tellerLayout.add(tellerButtons, BorderLayout.SOUTH);
 
-        tellerAccountList.setBorder(new TitledBorder(""));
+        Border tellerAccountListBorder = new TitledBorder("");
+        tellerAccountList.setBorder(new CompoundBorder(tellerAccountListBorder, margin));
         tellerAccounts.setBorder(new EmptyBorder(0, 5, 0, 5));
-        accountInfo.setBorder(new TitledBorder(""));
+        Border testerBorder = new TitledBorder("");
+        tester.setBorder(new CompoundBorder(testerBorder, margin));
         Border tellerBorder = new TitledBorder("Accounts");
         tellerLayout.setBorder(new CompoundBorder(tellerBorder, margin));
 
@@ -355,44 +377,41 @@ public class GUI extends JPanel {
         });
 
         //Breaks search currently
-        tellerAccountList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e)
-            {
-                String tellerAccount = tellerAccountList.getSelectedValue();
-                //Fix this.......................confused when searching cause it doesn't have value to pull from
-                try {
-                    String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
-                    int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
-
-                    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
-                } catch (NullPointerException E) {
-
-                }
-
-                gui.revalidate();
-                gui.repaint();
-            }
-        });
-
-        //Finish.......................................................................................................................................
-        searchTeller.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-
-                int customerID = Integer.parseInt(customerIDTextTeller.getText());
-//                tellerAccounts.removeAll();
-//                tellerAccountList = new JList<>(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
-//                tellerAccounts.add(tellerAccountList);
-
-                tellerAccountList.setListData(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
-
-                gui.revalidate();
-                gui.repaint();
-
-
-            }
-        });
+tellerAccountList.addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e)
+    {
+    String tellerAccount = tellerAccountList.getSelectedValue();
+    try {
+    String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
+    int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
+    
+    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+    } catch (NullPointerException E) {
+    
+    } catch (StringIndexOutOfBoundsException E) {
+    
+    }
+    
+    gui.revalidate();
+    gui.repaint();
+    }
+    });
+    
+    //Finish.......................................................................................................................................
+    searchTeller.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+    
+    int customerID = Integer.parseInt(customerIDTextTeller.getText());
+    tellerAccountList.setListData(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
+    
+    gui.revalidate();
+    gui.repaint();
+    
+    
+    }
+    });
 
         //Deposits money into selected account in Teller Interface
         depositTellerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -419,11 +438,14 @@ public class GUI extends JPanel {
                         break;
                     }
                 }
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+
                 getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).deposit(depositedAmount);
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+
+                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+
+                gui.revalidate();
+                gui.repaint();
             }
         });
 
@@ -451,11 +473,14 @@ public class GUI extends JPanel {
                         break;
                     }
                 }
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+
                 getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).withdraw(withdrawnAmount);
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+
+                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+
+                gui.revalidate();
+                gui.repaint();
             }
         });
 
@@ -583,6 +608,11 @@ public class GUI extends JPanel {
                 }
 
                 createNewAccount(savingsAccounts, checkingAccounts, type, customerID, currentBalance, backUpAccount, backUpAccountNumber);
+                
+                gui.getContentPane().removeAll();
+                gui.add(tellerLayout);
+                gui.revalidate();
+                gui.repaint();
             }
         });
 
