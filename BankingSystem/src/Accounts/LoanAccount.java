@@ -109,25 +109,6 @@ public class LoanAccount extends Account{
         paymentDueDate = c.getTime();
     }
 
-    public static void Notify(List<Account> list){//For calls in other files us LoanAccounts.notify(list);
-        Date current =new Date();
-        Calendar date= Calendar.getInstance();
-        date.setTime(current);
-        for(int i = 0; i < list.size(); i++){
-            LoanAccount a = (LoanAccount)list.get(i);
-            if(a.paymentDueDate.equals(current)){
-                date.add(Calendar.DATE,90);
-                a.paymentDueDate= date.getTime();
-                list.set(i,a);
-            }
-            else if(a.paymentDueDate.compareTo(current) <= 30){
-                System.out.println("Account Number: "+ a.accountNumber+" has a payment due: " + a.paymentDueDate);
-                a.paymentNotificationDate = current;
-                list.set(i,a);
-            }
-        }
-
-    }
     public void Notify(){//Used for initialization
         Date current =new Date();
         Calendar date= Calendar.getInstance();
