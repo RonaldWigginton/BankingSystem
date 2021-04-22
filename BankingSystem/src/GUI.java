@@ -706,7 +706,7 @@ public class GUI extends JPanel {
     public static void main(String[] args) {
         List<Account> accountList = new ArrayList<>();
         List<User> userList = new ArrayList<>();
-        List<Account> loanAccounts= new ArrayList<>();
+        List<LoanAccount> loanAccounts= new ArrayList<>();
         List<Account> checkingAccounts=new ArrayList<>();
         List<Account> savingsAccounts=new ArrayList<>();
         
@@ -718,6 +718,7 @@ public class GUI extends JPanel {
         accountList.addAll(loanAccounts);// RW
         accountList.addAll((checkingAccounts));// RW
         accountList.addAll((savingsAccounts));// RW
+        LoanAccount.Notify(loanAccounts);
     
         new GUI(checkingAccounts, savingsAccounts);
     }
