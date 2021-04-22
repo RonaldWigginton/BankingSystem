@@ -1,8 +1,12 @@
+package Accounts;
+
+import Accounts.LoanAccount;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-public class CreditCard extends LoanAccount{
+public class CreditCard extends LoanAccount {
     private double limit;
 
     public CreditCard(int customerId, double currentBalance, double interestRate, Date paymentDueDate, Date paymentNotificationDate, double paymentAmountDue, String loanType, boolean missedPayment, Date lastPaymentDate, double limit) {

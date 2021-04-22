@@ -1,5 +1,7 @@
 package Accounts;
 
+import java.util.List;
+
 public class Account {
     protected int customerId;
     protected double currentBalance;
@@ -64,13 +66,5 @@ public class Account {
     }
     public String getAccountType() {
         return type;
-    }
-    public static void delete (List <Account> list, int num, String type){
-        for(int i = 0; i < list.size(); i++){
-            Account a = list.get(i);
-            if((a.accountNumber == num)&&(type.equals(a.type) == true)){
-                list.remove(i);
-            }
-        }
     }
 }

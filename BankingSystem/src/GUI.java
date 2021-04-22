@@ -10,14 +10,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.xml.crypto.Data;
 
 import Accounts.*;
-
 //Written by Cassidy Edson
 public class GUI extends JPanel {
-    static List<Account> accountList = new ArrayList<>();
-    static List<User> userList = new ArrayList<>();
-    static List<Account> loanAccounts= new ArrayList<>();
-    static List<Account> checkingAccounts=new ArrayList<>();
-    static List<Account> savingsAccounts=new ArrayList<>();
     JFrame gui = new JFrame("Banking System");
     FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
@@ -468,14 +462,26 @@ public class GUI extends JPanel {
         //Deletes selected account in Teller Interface
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                List list = new ArrayList();
                 String tellerAccount = tellerAccountList.getSelectedValue();
                 String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
                 int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
                 int deleteConfirm = JOptionPane.YES_NO_OPTION;
                 JOptionPane.showConfirmDialog(gui, "Are you sure you want to delete this account?", "Delete Account", deleteConfirm);
                 if(deleteConfirm == JOptionPane.YES_OPTION) {
+                    List one = new ArrayList(tellerAccountList.getModel().getSize());
+                    for(int i = 0; i< tellerAccountList.getModel().getSize();i++){
+                        one.add(tellerAccountList.getModel().getElementAt(i));
+                    }
                     //Delete account
-                    Account.delete(accountList, accountNumber, accountType );
+                    delete(checkingAccounts, accountNumber,accountType );
+                    delete(savingsAccounts, accountNumber, accountType);
+                    delete(one, accountNumber, accountType);
+                    DefaultListModel listModel = new DefaultListModel();
+                    for(int i = 0; i<one.size(); i++){
+                        listModel.addElement(one.get(i));
+                    }
+                    tellerAccountList.setModel(listModel);
 
                 }
             }
@@ -714,6 +720,12 @@ public class GUI extends JPanel {
     }
 
     public static void main(String[] args) {
+
+        List<Account> accountList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
+        List<Account> loanAccounts= new ArrayList<>();
+        List<Account> checkingAccounts=new ArrayList<>();
+        List<Account> savingsAccounts=new ArrayList<>();
               
         userList = Database.GetUserData();  // RW
         loanAccounts = Database.GetLoanData(); // RW
@@ -726,6 +738,17 @@ public class GUI extends JPanel {
         LoanAccount.Notify(loanAccounts);
     
         new GUI(checkingAccounts, savingsAccounts);
+    }
+
+    public void delete (List<Account> list, int num, String type){
+        for(int i = 0; i < list.size(); i++){
+            Account a = list.get(i);
+            if((a.getAccountNumber() == num)&&(type.equals(a.getAccountType()) == true)){
+                System.out.println(list);
+                list.remove(i);
+                System.out.println(list);
+            }
+        }
     }
 
     public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber) {

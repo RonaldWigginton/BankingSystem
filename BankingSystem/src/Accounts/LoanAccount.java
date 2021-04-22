@@ -1,7 +1,9 @@
 package Accounts;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class LoanAccount extends Account{
     protected Date paymentDueDate;
@@ -107,7 +109,7 @@ public class LoanAccount extends Account{
         paymentDueDate = c.getTime();
     }
 
-    public void Notify (List <Account> list){//For calls in other files us LoanAccounts.notify(list);
+    public static void Notify(List<Account> list){//For calls in other files us LoanAccounts.notify(list);
         Date current =new Date();
         Calendar date= Calendar.getInstance();
         date.setTime(current);
