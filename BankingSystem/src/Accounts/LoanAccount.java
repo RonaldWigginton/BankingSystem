@@ -7,7 +7,7 @@ public class LoanAccount extends Account{
     private Date paymentDueDate;
     private Date paymentNotificationDate;
     private double paymentAmountDue;
-    private String loanType;
+    protected String loanType;//Long, Short, and Credit
     private boolean missedPayment;
     private Date lastPaymentDate;
 
@@ -25,6 +25,8 @@ public class LoanAccount extends Account{
         this.missedPayment = missedPayment;
         this.lastPaymentDate = lastPaymentDate;
         setStatus(0);
+        pastDue();
+        Notify();
     }
 
     @Override
@@ -86,5 +88,55 @@ public class LoanAccount extends Account{
 
     public void setLastPaymentDate(Date lastPaymentDate) {
         this.lastPaymentDate = lastPaymentDate;
+    }
+    public void pastDue(){
+        Date current =new Date();
+        if((current.after(paymentDueDate))&&(lastPaymentDate.before(paymentDueDate))){
+            missedPayment = true;
+            if(loanType.equals("Long")){
+                paymentAmountDue = paymentAmountDue + 75.0;
+            }
+        }
+    }
+    public void paymentMade(int amount){
+        currentBalance = currentBalance - amount;
+        lastPaymentDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, 30);
+        paymentDueDate = c.getTime();
+    }
+
+    public void Notify (ArrayList <LoanAccount> list){//For calls in other files us LoanAccounts.notify(list);
+        Date current =new Date();
+        Calendar date= Calendar.getInstance();
+        date.setTime(current);
+        for(int i = 0; i < list.size(); i++){
+            LoanAccount a = list.get(i);
+            if(a.paymentDueDate.equals(current)){
+                date.add(Calendar.DATE,90);
+                a.paymentDueDate= date.getTime();
+                list.set(i,a);
+            }
+            else if(a.paymentDueDate.compareTo(current) <= 30){
+                System.out.println("Account Number: "+ a.accountNumber+" has a payment due: " + a.paymentDueDate);
+                a.paymentNotificationDate = current;
+                list.set(i,a);
+            }
+        }
+
+    }
+    public void Notify(){//Used for initialization
+        Date current =new Date();
+        Calendar date= Calendar.getInstance();
+        date.setTime(current);
+        if(paymentDueDate.equals(current)){
+            date.add(Calendar.DATE,90);
+            paymentDueDate= date.getTime();
+        }
+        else if(paymentDueDate.compareTo(current) <= 30){
+            System.out.println("Account Number: "+ accountNumber+" has a payment due: " + paymentDueDate);
+            paymentNotificationDate = current;
+        }
     }
 }
