@@ -13,6 +13,11 @@ import Accounts.*;
 
 //Written by Cassidy Edson
 public class GUI extends JPanel {
+    static List<Account> accountList = new ArrayList<>();
+    static List<User> userList = new ArrayList<>();
+    static List<Account> loanAccounts= new ArrayList<>();
+    static List<Account> checkingAccounts=new ArrayList<>();
+    static List<Account> savingsAccounts=new ArrayList<>();
     JFrame gui = new JFrame("Banking System");
     FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
@@ -463,10 +468,15 @@ public class GUI extends JPanel {
         //Deletes selected account in Teller Interface
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                String tellerAccount = tellerAccountList.getSelectedValue();
+                String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
+                int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
                 int deleteConfirm = JOptionPane.YES_NO_OPTION;
                 JOptionPane.showConfirmDialog(gui, "Are you sure you want to delete this account?", "Delete Account", deleteConfirm);
                 if(deleteConfirm == JOptionPane.YES_OPTION) {
                     //Delete account
+                    Account.delete(accountList, accountNumber, accountType );
+
                 }
             }
         });
@@ -704,12 +714,7 @@ public class GUI extends JPanel {
     }
 
     public static void main(String[] args) {
-        List<Account> accountList = new ArrayList<>();
-        List<User> userList = new ArrayList<>();
-        List<LoanAccount> loanAccounts= new ArrayList<>();
-        List<Account> checkingAccounts=new ArrayList<>();
-        List<Account> savingsAccounts=new ArrayList<>();
-        
+              
         userList = Database.GetUserData();  // RW
         loanAccounts = Database.GetLoanData(); // RW
         savingsAccounts = Database.GetSavingData();// RW
