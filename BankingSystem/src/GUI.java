@@ -167,7 +167,7 @@ public class GUI extends JPanel {
     JButton atmButton = new JButton("ATM");
     JButton signInButton = new JButton("Sign In");
 
-    GUI(List<Account> checkingAccounts, List<Account> savingsAccounts) {
+    GUI(List<Account> checkingAccounts, List<Account> savingsAccounts, List<Account> loanAccounts, List<Account> accountList) {
         gui.setSize(500, 335);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -484,7 +484,7 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
             }
         });
 
-        //Deletes selected account in Teller Interface
+       //Deletes selected account in Teller Interface
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 List list = new ArrayList();
@@ -501,6 +501,8 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
                     //Delete account
                     delete(checkingAccounts, accountNumber,accountType );
                     delete(savingsAccounts, accountNumber, accountType);
+                    delete(loanAccounts, accountNumber,accountType);
+                    delete(accountList,accountNumber,accountType);
                     delete(one, accountNumber, accountType);
                     DefaultListModel listModel = new DefaultListModel();
                     for(int i = 0; i<one.size(); i++){
@@ -765,9 +767,9 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
         accountList.addAll(loanAccounts);// RW
         accountList.addAll((checkingAccounts));// RW
         accountList.addAll((savingsAccounts));// RW
-        LoanAccount.Notify(loanAccounts);
+        Notify(loanAccounts);
     
-        new GUI(checkingAccounts, savingsAccounts);
+        new GUI(checkingAccounts, savingsAccounts, loanAccounts, accountList);
     }
 
     public void delete (List<Account> list, int num, String type){
@@ -842,5 +844,24 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
             }
         }
         return account;
+   }
+    public static void Notify(List<Account> list){//For calls in other files us LoanAccounts.notify(list);
+        Date current =new Date();
+        Calendar date= Calendar.getInstance();
+        date.setTime(current);
+        for(int i = 0; i < list.size(); i++){
+            LoanAccount a = (LoanAccount)list.get(i);
+            if(a.getPaymentDueDate().equals(current)){
+                date.add(Calendar.DATE,90);
+                a.setPaymentDueDate(date.getTime());
+                list.set(i,a);
+            }
+            else if(a.getPaymentDueDate().compareTo(current) <= 30){
+                System.out.println("Account Number: "+ a.getAccountNumber()+" has a payment due: " + a.getPaymentDueDate());
+                a.setPaymentNotificationDate(current);
+                list.set(i,a);
+            }
+        }
+
     }
 }
