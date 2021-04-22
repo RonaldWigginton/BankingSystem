@@ -47,7 +47,8 @@ public class Database { // This is our Banking System
     } // End of Database  */
     // Load User Data
     public static List<User> GetUserData(){
-        File file = new File("./src/Database/customers.txt");
+        // Changed for Windows bc not everyone uses linux bc linux is actually not that cool when you think about it.
+        File file = new File("BankingSystem\\src\\Database\\customers.txt");
         var UserAccounts = new ArrayList<User>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file)))
@@ -69,7 +70,7 @@ public class Database { // This is our Banking System
 
     // Load Checking Acct Data
     public static List<Account> GetCheckingData(){
-        File checkingFile = new File("./src/Database/checkingAccounts.txt");
+        File checkingFile = new File("BankingSystem\\src\\Database\\checkingAccounts.txt");
         var checkingAccounts = new ArrayList<Account>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(checkingFile)))
@@ -94,7 +95,7 @@ public class Database { // This is our Banking System
     }
     // Load Loan Acct Data
      public static  List<Account> GetLoanData(){
-        File loanFile = new File("./src/Database/loanAccounts.txt");
+        File loanFile = new File("BankingSystem\\src\\Database\\loanAccounts.txt");
         var loanAccounts = new ArrayList<Account>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(loanFile)))
@@ -120,7 +121,7 @@ public class Database { // This is our Banking System
     }
     // Load Savings Actt Data
      public static List<Account> GetSavingData(){
-        File savingFile = new File("./src/Database/savingsAccounts.txt");
+        File savingFile = new File("BankingSystem\\src\\Database\\savingsAccounts.txt");
         var savingAccounts = new ArrayList<Account>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(savingFile)))
@@ -146,7 +147,7 @@ public class Database { // This is our Banking System
 
     // Save Customer Data
     public static void SaveUserData(List<User> users)throws IOException {
-        File userFile = new File("./src/Database/customers.txt");
+        File userFile = new File("BankingSystem\\src\\Database\\customers.txt");
         FileWriter writer = new FileWriter(userFile);
         ArrayList<String[]> records = new ArrayList<String[]>();
 
