@@ -107,7 +107,7 @@ public class LoanAccount extends Account{
         paymentDueDate = c.getTime();
     }
 
-    public void Notify (ArrayList <LoanAccount> list){//For calls in other files us LoanAccounts.notify(list);
+    public void Notify (List <LoanAccount> list){//For calls in other files us LoanAccounts.notify(list);
         Date current =new Date();
         Calendar date= Calendar.getInstance();
         date.setTime(current);
