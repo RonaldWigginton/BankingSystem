@@ -4,12 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LoanAccount extends Account{
-    private Date paymentDueDate;
-    private Date paymentNotificationDate;
-    private double paymentAmountDue;
+    protected Date paymentDueDate;
+    protected Date paymentNotificationDate;
+    protected double paymentAmountDue;
     protected String loanType;//Long, Short, and Credit
-    private boolean missedPayment;
-    private Date lastPaymentDate;
+    protected boolean missedPayment;
+    protected Date lastPaymentDate;
 
     public LoanAccount(int customerId, double currentBalance, double interestRate, Date paymentDueDate,
                        Date paymentNotificationDate, double paymentAmountDue, String loanType, boolean missedPayment,
