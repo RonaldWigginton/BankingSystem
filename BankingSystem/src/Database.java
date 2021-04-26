@@ -15,36 +15,7 @@ import Accounts.SavingsAccount;
 import Accounts.User;
 
 
-public class Database { // This is our Banking System
-    
-/*     public static void Database(String[] args) throws Exception {
-
-         List<User> userList = new ArrayList<>();
-         List<Account> loanAccounts= new ArrayList<>();
-         List<Account> checkingAccounts=new ArrayList<>();
-         List<Account> savingAccounts=new ArrayList<>();
-
-        
-       
-        File checkingFile = new File("./src/Database/checkingAccounts.txt");
-        File savingFile = new File("./src/Database/savingsAccounts.txt");
-        File userFile = new File("./src/Database/customers.txt");
-       
-        // load accounts into given arraylists
-        loanAccounts = GetLoanData();
-        checkingAccounts = GetCheckingData();
-        savingAccounts = GetSavingData();
-       // userList = GetUserData(userFile);
-     
-        // If we need to Save
-
-       // SaveAccountData("loan",loanAccounts);
-
-
-
-
-       
-    } // End of Database  */
+public class Database { // This is our Banking System Database
     // Load User Data
     public static List<User> GetUserData(){
         // Changed for Windows bc not everyone uses linux bc linux is actually not that cool when you think about it.
@@ -147,7 +118,7 @@ public class Database { // This is our Banking System
 
     // Save Customer Data
     public static void SaveUserData(List<User> users)throws IOException {
-        File userFile = new File("BankingSystem\\src\\Database\\customers.txt");
+        File userFile = new File("BankingSystem\\src\\Database\\customers1.txt");
         FileWriter writer = new FileWriter(userFile);
         ArrayList<String[]> records = new ArrayList<String[]>();
 
@@ -165,32 +136,66 @@ public class Database { // This is our Banking System
         writer.flush();
         writer.close(); 
     }
-// We can save whatever accounts we want whereever we want
- public static void SaveAccountData(String type,List<Account> accounts)throws IOException {
-    File file = new File("./");
+// We can save whatever accounts 
+ public static void SaveAccountData(List<Account> accounts)throws IOException {
+    File file = new File("");
     System.out.println("Debug");
-    switch(type.toLowerCase().trim()){
-        case "loan":
-            file = new File("./src/Database/loanAccounts.txt");
-        case "saving" :
-            file = new File("./src/Database/savingsAccounts.txt");
-        case "checking" :
-            file = new File("./src/Database/savingsAccounts.txt");
+    ArrayList<String[]> loanRecords = new ArrayList<String[]>();
+    ArrayList<String[]> savingRecords = new ArrayList<String[]>();
+    ArrayList<String[]> CheckingRecords = new ArrayList<String[]>();
+    for (Account account : accounts) {
+        if(account instanceof LoanAccount){
+            loanRecords.add(account.accountToArray());
+        }
+        else if (account instanceof SavingsAccount){
+            savingRecords.add(account.accountToArray());
+        }
+        else if (account instanceof CheckingAccount){
+            CheckingRecords.add(account.accountToArray());
+        }
     }
+    file = new File("BankingSystem\\src\\Database\\loanAccounts1.txt");
     FileWriter writer = new FileWriter(file);
-    ArrayList<String[]> records = new ArrayList<String[]>();
 
-    for(var account : accounts)
-    {
-        records.add(account.accountToArray());
-    }
-
-    for(var record : records)
+    for(var record : loanRecords)
     {
         writer.append(String.join(",",record));
         writer.append("\n");
     }
+    writer.flush();
+    writer.close();
 
+    file = new File("BankingSystem\\src\\Database\\savingsAccounts1.txt");
+    writer = new FileWriter(file);
+
+    for(var record : savingRecords)
+    {
+        writer.append(String.join(",",record));
+        writer.append("\n");
+    }
+        writer.flush();
+        writer.close();
+        
+        file = new File("BankingSystem\\src\\Database\\checkingAccounts1.txt");
+        writer = new FileWriter(file);
+
+        for(var record : CheckingRecords)
+        {
+            writer.append(String.join(",",record));
+            writer.append("\n");
+        }
+        writer.flush();
+        writer.close();
+        
+        file = new File("BankingSystem\\src\\Database\\savingsAccounts1.txt");
+        writer = new FileWriter(file);
+
+        for(var record : savingRecords)
+        {
+            writer.append(String.join(",",record));
+            writer.append("\n");
+        }
+    
     writer.flush();
     writer.close();
     }

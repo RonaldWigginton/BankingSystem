@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -7,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.crypto.Data;
 
 import Accounts.*;
 //Written by Cassidy Edson
@@ -102,7 +104,7 @@ public class GUI extends JPanel {
     JTextField accountIDText = new JTextField();
     JLabel balanceLabel = new JLabel("Balance: ");
     JLabel recentDebitsLabel = new JLabel("Recent Debits: ");
-    JLabel accountStatusLabel = new JLabel("Account status: ");
+    JLabel accountStatusLabel = new JLabel(" Account status: ");
     JButton transferButton = new JButton("Transfer");
     JButton deleteButton = new JButton("Delete Account");
     JButton createNewButton = new JButton("Create New Account");
@@ -114,20 +116,6 @@ public class GUI extends JPanel {
     JButton searchTeller = new JButton("Search");
     String[] customers;
     String[] test = new String[] {"Accounts"};
-    //Type means check, payment made to credit card, ect
-    String[] columnNames = new String[] {"Type", "Amount", "Date"};
-    String[][] recentDebitsData = new String[][] {
-            {"Check", "50.00", "5/14/2021"},
-            {"Check Payment", "250.00", "4/4/2021"},
-            {"test", "5", "4/1/2021"},
-            {"Check", "2", "4/1/2021"},
-            {"Check", "6", "4/1/2021"},
-            {"Credit Cards", "50", "3/30/2021"}
-    };
-    JTable tellerRecentDebits = new JTable(recentDebitsData, columnNames);
-
-    JScrollPane tablePane = new JScrollPane(tellerRecentDebits);
-    JPanel tester = new JPanel(new GridLayout(2, 1, 5, 5));
 
     //Transfer
     JPanel transferLayout = new JPanel(new GridLayout(2, 2, 5, 5));
@@ -167,8 +155,8 @@ public class GUI extends JPanel {
     JButton atmButton = new JButton("ATM");
     JButton signInButton = new JButton("Sign In");
 
-    GUI(List<Account> checkingAccounts, List<Account> savingsAccounts, List<Account> loanAccounts, List<Account> accountList) {
-        gui.setSize(500, 335);
+    GUI(List<Account> checkingAccounts, List<Account> savingsAccounts) {
+        gui.setSize(500, 300);
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Get all accounts from customer id
@@ -254,7 +242,7 @@ public class GUI extends JPanel {
 
         managerAccountList.setBorder(new TitledBorder(""));
         managerAccounts.setBorder(new EmptyBorder(0, 5, 0, 5));
-        accountInfoManager.setBorder(new TitledBorder(""));
+        accountInfo.setBorder(new TitledBorder(""));
 
         Border managerBorder = new TitledBorder("Accounts");
         managerLayout.setBorder(new CompoundBorder(managerBorder, margin));
@@ -333,10 +321,10 @@ public class GUI extends JPanel {
         enterAccountID.add(searchTeller);
         accountInfo.add(balanceLabel);
         balanceLabel.setHorizontalAlignment(JLabel.LEFT);
-        accountInfo.add(accountStatusLabel);
-        accountStatusLabel.setHorizontalAlignment(JLabel.LEFT);
         accountInfo.add(recentDebitsLabel);
         recentDebitsLabel.setHorizontalAlignment(JLabel.LEFT);
+        accountInfo.add(accountStatusLabel);
+        accountStatusLabel.setHorizontalAlignment(JLabel.LEFT);
         tellerButtons.add(withdrawTellerButton);
         tellerButtons.add(depositTellerButton);
         tellerButtons.add(transferButton);
@@ -344,23 +332,14 @@ public class GUI extends JPanel {
         tellerButtons.add(createNewButton);
         tellerButtons.add(stopPaymentTellerButton);
         tellerAccounts.add(tellerAccountList);
-
-        tester.add(accountInfo);
-        tester.add(tablePane);
-        tablePane.setPreferredSize(new Dimension(50, 50));
-        tablePane.setMaximumSize(new Dimension(50, 50));
-        tablePane.setMinimumSize(new Dimension(50, 50));
-
         tellerLayout.add(enterAccountID, BorderLayout.NORTH);
         tellerLayout.add(tellerAccounts, BorderLayout.WEST);
-        tellerLayout.add(tester, BorderLayout.CENTER);
+        tellerLayout.add(accountInfo, BorderLayout.CENTER);
         tellerLayout.add(tellerButtons, BorderLayout.SOUTH);
 
-        Border tellerAccountListBorder = new TitledBorder("");
-        tellerAccountList.setBorder(new CompoundBorder(tellerAccountListBorder, margin));
+        tellerAccountList.setBorder(new TitledBorder(""));
         tellerAccounts.setBorder(new EmptyBorder(0, 5, 0, 5));
-        Border testerBorder = new TitledBorder("");
-        tester.setBorder(new CompoundBorder(testerBorder, margin));
+        accountInfo.setBorder(new TitledBorder(""));
         Border tellerBorder = new TitledBorder("Accounts");
         tellerLayout.setBorder(new CompoundBorder(tellerBorder, margin));
 
@@ -377,41 +356,44 @@ public class GUI extends JPanel {
         });
 
         //Breaks search currently
-tellerAccountList.addListSelectionListener(new ListSelectionListener() {
-    @Override
-    public void valueChanged(ListSelectionEvent e)
-    {
-    String tellerAccount = tellerAccountList.getSelectedValue();
-    try {
-    String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
-    int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
-    
-    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
-    } catch (NullPointerException E) {
-    
-    } catch (StringIndexOutOfBoundsException E) {
-    
-    }
-    
-    gui.revalidate();
-    gui.repaint();
-    }
-    });
-    
-    //Finish.......................................................................................................................................
-    searchTeller.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-    
-    int customerID = Integer.parseInt(customerIDTextTeller.getText());
-    tellerAccountList.setListData(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
-    
-    gui.revalidate();
-    gui.repaint();
-    
-    
-    }
-    });
+        tellerAccountList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e)
+            {
+                String tellerAccount = tellerAccountList.getSelectedValue();
+                //Fix this.......................confused when searching cause it doesn't have value to pull from
+                try {
+                    String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
+                    int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
+
+                    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+                } catch (NullPointerException E) {
+
+                }
+
+                gui.revalidate();
+                gui.repaint();
+            }
+        });
+
+        //Finish.......................................................................................................................................
+        searchTeller.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+
+                int customerID = Integer.parseInt(customerIDTextTeller.getText());
+//                tellerAccounts.removeAll();
+//                tellerAccountList = new JList<>(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
+//                tellerAccounts.add(tellerAccountList);
+
+                tellerAccountList.setListData(getAccountNumber(savingsAccounts, checkingAccounts, customerID));
+
+                gui.revalidate();
+                gui.repaint();
+
+
+            }
+        });
 
         //Deposits money into selected account in Teller Interface
         depositTellerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -438,14 +420,11 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
                         break;
                     }
                 }
-
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
                 getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).deposit(depositedAmount);
-
-                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
-
-                gui.revalidate();
-                gui.repaint();
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
             }
         });
 
@@ -473,18 +452,15 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
                         break;
                     }
                 }
-
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
                 getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).withdraw(withdrawnAmount);
-
-                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
-
-                gui.revalidate();
-                gui.repaint();
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
             }
         });
 
-       //Deletes selected account in Teller Interface
+        //Deletes selected account in Teller Interface
         deleteButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 List list = new ArrayList();
@@ -499,16 +475,24 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
                         one.add(tellerAccountList.getModel().getElementAt(i));
                     }
                     //Delete account
-                    delete(checkingAccounts, accountNumber,accountType );
+                    try {
+                        delete(checkingAccounts, accountNumber,accountType );
+                    } catch (IOException e) {
+                        System.out.println("ERROR in DELETE 1 (Teller INTERFACE)");
+                    }
+                    try {
                     delete(savingsAccounts, accountNumber, accountType);
-                    delete(loanAccounts, accountNumber,accountType);
-                    delete(accountList,accountNumber,accountType);
-                    delete(one, accountNumber, accountType);
+                    } catch (IOException e) {
+                            System.out.println("ERROR in DELETE 2 (Teller INTERFACE)");
+                        }
+               
                     DefaultListModel listModel = new DefaultListModel();
                     for(int i = 0; i<one.size(); i++){
                         listModel.addElement(one.get(i));
                     }
                     tellerAccountList.setModel(listModel);
+                    gui.revalidate();
+                    gui.repaint();
 
                 }
             }
@@ -608,13 +592,11 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
                     backUpAccount = Integer.parseInt(backUpAccountText.getText());
                     backUpAccountNumber = Integer.parseInt(backUpAccountNumberText.getText());
                 }
-
-                createNewAccount(savingsAccounts, checkingAccounts, type, customerID, currentBalance, backUpAccount, backUpAccountNumber);
-                
-                gui.getContentPane().removeAll();
-                gui.add(tellerLayout);
-                gui.revalidate();
-                gui.repaint();
+                    try {
+                        createNewAccount(savingsAccounts, checkingAccounts, type, customerID, currentBalance, backUpAccount, backUpAccountNumber);
+                    } catch (IOException e) {
+                       System.out.println("Exception in Create New Account (Submit button)");
+                    }
             }
         });
 
@@ -710,6 +692,7 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
                     }
                 }
                 System.out.println(withdrawnAmount);
+                
             }
         });
 
@@ -747,11 +730,11 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
 
         gui.setLayout(flow);
         //Change this to where you want to GUI to start from
-        gui.add(tellerLayout);
+        gui.add(startLayout);
         gui.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         List<Account> accountList = new ArrayList<>();
         List<User> userList = new ArrayList<>();
@@ -767,14 +750,18 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
         accountList.addAll(loanAccounts);// RW
         accountList.addAll((checkingAccounts));// RW
         accountList.addAll((savingsAccounts));// RW
-        Notify(loanAccounts);
     
-        new GUI(checkingAccounts, savingsAccounts, loanAccounts, accountList);
+        new GUI(checkingAccounts, savingsAccounts);
+        Database.SaveAccountData(savingsAccounts);
+        Database.SaveAccountData(checkingAccounts);
+        Database.SaveAccountData(loanAccounts);
+        System.out.println("Saved");
+
     }
 
-    public void delete (List<Account> list, int num, String type){
+    public void delete (List<Account> list, int num, String type) throws IOException{
         for(int i = 0; i < list.size(); i++){
-            Account a = list.get(i);
+            Account a = (Account)(list.get(i));
             if((a.getAccountNumber() == num)&&(type.equals(a.getAccountType()) == true)){
                 System.out.println(list);
                 list.remove(i);
@@ -783,7 +770,7 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
         }
     }
 
-    public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber) {
+    public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber) throws IOException {
         int savingsAccountNumber = savingsAccounts.size() + 1;
         int checkingAccountNumber = checkingAccounts.size() + 1;
         double interestRate = 1.0;
@@ -803,6 +790,8 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
         } else if(accountType.equals("Credit Card Loan")) {
 
         }
+        Database.SaveAccountData(savingsAccounts);
+        Database.SaveAccountData(checkingAccounts);
     }
 
     public String[] getAccountNumber(List<Account> savingsAccounts, List<Account> checkingAccounts, int customerId) {
@@ -844,24 +833,5 @@ tellerAccountList.addListSelectionListener(new ListSelectionListener() {
             }
         }
         return account;
-   }
-    public static void Notify(List<Account> list){//For calls in other files us LoanAccounts.notify(list);
-        Date current =new Date();
-        Calendar date= Calendar.getInstance();
-        date.setTime(current);
-        for(int i = 0; i < list.size(); i++){
-            LoanAccount a = (LoanAccount)list.get(i);
-            if(a.getPaymentDueDate().equals(current)){
-                date.add(Calendar.DATE,90);
-                a.setPaymentDueDate(date.getTime());
-                list.set(i,a);
-            }
-            else if(a.getPaymentDueDate().compareTo(current) <= 30){
-                System.out.println("Account Number: "+ a.getAccountNumber()+" has a payment due: " + a.getPaymentDueDate());
-                a.setPaymentNotificationDate(current);
-                list.set(i,a);
-            }
-        }
-
     }
 }
