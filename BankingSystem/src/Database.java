@@ -186,17 +186,5 @@ public class Database { // This is our Banking System Database
         }
         writer.flush();
         writer.close();
-        
-        file = new File("BankingSystem\\src\\Database\\savingsAccounts1.txt");
-        writer = new FileWriter(file);
-
-        for(var record : savingRecords)
-        {
-            writer.append(String.join(",",record));
-            writer.append("\n");
-        }
-    
-    writer.flush();
-    writer.close();
     }
 }
