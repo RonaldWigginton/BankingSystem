@@ -9,7 +9,7 @@ public class LoanAccount extends Account{
     protected Date paymentDueDate;
     protected Date paymentNotificationDate;
     protected double paymentAmountDue;
-    protected String loanType;//Long, Short, and Credit
+    protected String accountType;//Long, Short, and Credit
     protected boolean missedPayment;
     protected Date lastPaymentDate;
 
@@ -23,7 +23,7 @@ public class LoanAccount extends Account{
         this.paymentDueDate = paymentDueDate;
         this.paymentNotificationDate = paymentNotificationDate;
         this.paymentAmountDue = paymentAmountDue;
-        this.loanType = loanType;
+        this.accountType = loanType;
         this.missedPayment = missedPayment;
         this.lastPaymentDate = lastPaymentDate;
         setStatus(0);
@@ -40,7 +40,7 @@ public class LoanAccount extends Account{
                         Integer.toString(customerId), Double.toString(currentBalance),
                         Double.toString(interestRate), formatter.format(paymentDueDate),
                         formatter.format(paymentNotificationDate), Double.toString(paymentAmountDue),
-                        loanType, Integer.toString(missedPayment ? 1 : 0), formatter.format(lastPaymentDate)
+                        accountType, Integer.toString(missedPayment ? 1 : 0), formatter.format(lastPaymentDate)
                 };
     }
 
@@ -68,12 +68,12 @@ public class LoanAccount extends Account{
         this.paymentAmountDue = paymentAmountDue;
     }
 
-    public String getLoanType() {
-        return loanType;
+    public String getAccountType() {
+        return accountType;
     }
 
     public void setLoanType(String loanType) {
-        this.loanType = loanType;
+        this.accountType = loanType;
     }
 
     public boolean isMissedPayment() {
@@ -95,7 +95,7 @@ public class LoanAccount extends Account{
         Date current =new Date();
         if((current.after(paymentDueDate))&&(lastPaymentDate.before(paymentDueDate))){
             missedPayment = true;
-            if(loanType.equals("Long")){
+            if(accountType.equals("Long")){
                 paymentAmountDue = paymentAmountDue + 75.0;
             }
         }

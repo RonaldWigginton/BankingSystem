@@ -3,6 +3,9 @@ package Accounts;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+
+
 public class CheckingAccount extends Account {
     private int accountNumber;
     private String accountType;
@@ -38,6 +41,17 @@ public class CheckingAccount extends Account {
                                  Integer.toString(overdrafts), formatter.format(dateOpened)
                             };
 
+    }
+
+    public double withdraw(double amount){
+        //withdraw money
+        if(accountType.equals("Gold/Diamond") && currentBalance >= amount + 1000) {
+            currentBalance-=amount;
+            return currentBalance;
+        } else {
+            JOptionPane.showMessageDialog(null, "You cannot withdraw more than the minimum balance", "Minimum Balance", JOptionPane.ERROR_MESSAGE);
+            return currentBalance;
+        }
     }
     
     public int getAccountNumber() {
