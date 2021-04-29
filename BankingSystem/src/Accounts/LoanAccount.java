@@ -132,4 +132,9 @@ public class LoanAccount extends Account{
             paymentNotificationDate = current;
         }
     }
+    @Override
+    public double withdraw(double amount){
+        System.out.println("Cannot withdraw from loan account.");
+        return currentBalance;
+    }
 }
