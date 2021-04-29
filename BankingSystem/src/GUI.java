@@ -459,19 +459,19 @@ public class GUI extends JPanel {
                 String accountTypeTransfer = accountToTransferTo.substring(0, accountToTransferTo.indexOf(" "));
                 int accountNumberTransfer = Integer.parseInt(accountToTransferTo.substring(accountToTransferTo.indexOf(" ") + 1));
  
-                getAccount(savingsAccounts, checkingAccounts, accountTypeTransfer, accountNumberTransfer).deposit(transferAmount);
-                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).withdraw(transferAmount);
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountTypeTransfer, accountNumberTransfer).deposit(transferAmount);
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(transferAmount);
 
-                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).addRecentDebits("Transfer Out", Integer.toString(transferAmount));
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).addRecentDebits("Transfer Out", Integer.toString(transferAmount));
  
                 //Not working
-                if(accountType.equals("Gold/Diamond") && getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance() - transferAmount < 1000) {
+                if(accountType.equals("Gold/Diamond") && getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).getCurrentBalance() - transferAmount < 1000) {
                     JOptionPane.showMessageDialog(transferLayout, "You cannot withdraw more than the minimum balance", "Minimum Balance", JOptionPane.ERROR_MESSAGE);
                 }
 
                 //Updates account info panel
-                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance());
+                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts,loanAccounts, accountType, accountNumber).getStatus());
  
                 gui.revalidate();
                 gui.repaint();
@@ -497,10 +497,10 @@ public class GUI extends JPanel {
                     String accountType = tellerAccount.substring(0, tellerAccount.indexOf(" "));
                     int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
 
-                    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+                    balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts,loanAccounts, accountType, accountNumber).getCurrentBalance());
+                    accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts,loanAccounts, accountType, accountNumber).getStatus());
 
-                    tablePane.setViewportView(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getRecentDebits());
+                    tablePane.setViewportView(getAccount(savingsAccounts, checkingAccounts,loanAccounts, accountType, accountNumber).getRecentDebits());
                 } catch (NullPointerException E) {
 
                 }
@@ -564,22 +564,22 @@ public class GUI extends JPanel {
                     checkAccountNumber = Integer.parseInt(checkAccountText.getText());
 
                     //Check if in stopped checks - redo this.......................................................................................
-                    if(getAccount(savingsAccounts, checkingAccounts, accountType, checkAccountNumber).checkStoppedChecks(checkNumber)) {
+                    if(getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, checkAccountNumber).checkStoppedChecks(checkNumber)) {
                         JOptionPane.showMessageDialog(gui, "This check was stopped", "Stopped Check", JOptionPane.WARNING_MESSAGE);
                     } else {
-                        getAccount(savingsAccounts, checkingAccounts, accountType, checkAccountNumber).withdraw(checkAmount);
-                        getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).deposit(checkAmount); //Good
+                        getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, checkAccountNumber).withdraw(checkAmount);
+                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).deposit(checkAmount); //Good
                     }
                 }
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).deposit(depositedAmount);
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getAccountType());
-                System.out.println(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts,loanAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).getCurrentBalance());
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).deposit(depositedAmount);
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).getAccountType());
+                System.out.println(getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance());
 
                 //Updates account info panel
-                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).getCurrentBalance());
+                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts,loanAccounts,accountType, accountNumber).getStatus());
 
                 gui.revalidate();
                 gui.repaint();
@@ -612,13 +612,13 @@ public class GUI extends JPanel {
                 }
 
                 //Adds to recent debits
-                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount));
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount));
 
-                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).withdraw(withdrawnAmount);
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
 
                 //Updates account info panel
-                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance());
-                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getStatus());
+                balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance());
+                accountStatusLabel.setText("Status: " + getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getStatus());
 
                 gui.revalidate();
                 gui.repaint();
@@ -705,7 +705,7 @@ public class GUI extends JPanel {
                             checkNumber = enteredCheckNumber;
                             notNumeric = false;
                             //Add to stopped checks array list for this account
-                            getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).addStopPayment(checkNumber);
+                            getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addStopPayment(checkNumber);
                         }
                     } catch (NumberFormatException e) {
                         break;
@@ -801,7 +801,7 @@ public class GUI extends JPanel {
                 String loanType = (String) accountType.getSelectedItem();
                 String[] loanTime = new String[] {"15 yrs", "30yrs"};
 
-                if(loanType.equals("Long Term Loan")) {
+                if(loanType.equals("Long")) {
                     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(loanTime);
                     loanTimeCombo.setModel(model);
                     loanTimeCombo.enable();
@@ -928,14 +928,14 @@ public class GUI extends JPanel {
                     }
                 }
                 
-                if(getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).overWithdrawLimit()) {
+                if(getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).overWithdrawLimit()) {
                     System.out.println("Withdrawing");
                     //Adds to recent debits
-                    getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).addRecentDebits("Withdraw", Integer.toString(withdrawnAmount));
+                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Integer.toString(withdrawnAmount));
 
-                    getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).withdraw(withdrawnAmount);
+                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
 
-                    getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).addWithdrawnToday();;
+                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addWithdrawnToday();;
                 } else {
                     JOptionPane.showMessageDialog(gui, "You can only make 2 withdraws at day from the ATM", "Withdraw Limit", JOptionPane.ERROR_MESSAGE);
                 }
@@ -967,7 +967,7 @@ public class GUI extends JPanel {
                     }
                 }
 
-                getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).deposit(depositedAmount);
+                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).deposit(depositedAmount);
                 System.out.println(depositedAmount);
             }
         });
@@ -979,7 +979,7 @@ public class GUI extends JPanel {
                 int accountNumber = Integer.parseInt(chosenAccount.substring(chosenAccount.indexOf(" ") + 1));
 
                 //Pull in balance based on account chosen.......................................................
-               JOptionPane.showMessageDialog(gui, "Account: " + accountType + " " +accountNumber + "\nBalance: " + getAccount(savingsAccounts, checkingAccounts, accountType, accountNumber).getCurrentBalance(), "Balance", JOptionPane.INFORMATION_MESSAGE);
+               JOptionPane.showMessageDialog(gui, "Account: " + accountType + " " +accountNumber + "\nBalance: " + getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance(), "Balance", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -1044,15 +1044,15 @@ public class GUI extends JPanel {
         } else if(accountType.equals("CD")) {
             savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date(), "yes'"));
             savingsAccountNumber++;
-        } else if(accountType.equals("Long Term Loan")) {
+        } else if(accountType.equals("Long")) {
             loanDueDate.get((Calendar.YEAR) + loanLength);
             dueDate = loanDueDate.getTime();
             loanAccounts.add(new LoanAccount(customerId, loanAccountNumber, currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, accountType, false, new Date()));
-        } else if(accountType.equals("Short Term Loan")) {
+        } else if(accountType.equals("Short")) {
             loanDueDate.get((Calendar.YEAR) + 5);
             dueDate = loanDueDate.getTime();
             loanAccounts.add(new LoanAccount(customerId, loanAccountNumber,currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, accountType, false, new Date()));
-        } else if(accountType.equals("Credit Card Loan")) {
+        } else if(accountType.equals("Credit")) {
 
         }
 
@@ -1088,7 +1088,7 @@ public class GUI extends JPanel {
         return accountTypesReturn;
     }
 
-    public Account getAccount(List<Account> savings, List<Account> checking, String accountType, int accountNumber) {
+    public Account getAccount(List<Account> savings, List<Account> checking, List<Account> loans, String accountType, int accountNumber) {
         Account account = null;
         if(accountType.equals("Savings")) {
             for (int i = 0; i < savings.size(); i++) {
@@ -1102,6 +1102,13 @@ public class GUI extends JPanel {
             for (int i = 0; i < checking.size(); i++) {
                 if (checking.get(i).getAccountNumber() == accountNumber) {
                     account = checking.get(i);
+                }
+            }
+        }
+        if(accountType.equals("Long") || accountType.equals("Short") || accountType.equals("Credit")) {
+            for (int i = 0; i < loans.size(); i++) {
+                if (loans.get(i).getAccountNumber() == accountNumber) {
+                    account = loans.get(i);
                 }
             }
         }
@@ -1144,3 +1151,4 @@ public class GUI extends JPanel {
         return false;
     }
 }
+
