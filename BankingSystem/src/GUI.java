@@ -639,16 +639,29 @@ public class GUI extends JPanel {
                     for(int i = 0; i< tellerAccountList.getModel().getSize();i++){
                         one.add(tellerAccountList.getModel().getElementAt(i));
                     }
-                    //Delete account
-                    try {
-                        delete(checkingAccounts, accountNumber,accountType );
-                    } catch (IOException e) {
-                        System.out.println("ERROR in DELETE 1 (Teller INTERFACE)");
+                    //Delete account 
+                    //Long, Short, and Credit Loan type
+                    if(accountType.contains(("Long")) || accountType.contains("Short") || accountType.contains("Credit")){
+                        try {
+                            delete(loanAccounts, accountNumber);
+                        } catch (IOException e) {
+                            System.out.println("ERROR Deleting Loan Account");
+                        }
                     }
-                    try {
-                    delete(savingsAccounts, accountNumber, accountType);
-                    } catch (IOException e) {
-                            System.out.println("ERROR in DELETE 2 (Teller INTERFACE)");
+                    // checking account Types ("That's My Bank") || accountType.equals("Gold/Diamond")) 
+                    if(accountType.contains("That's My Bank") || accountType.equals("Gold/Diamond")){
+                        try {
+                            delete(checkingAccounts, accountNumber );
+                        } catch (IOException e) {
+                            System.out.println("ERROR Deleting Checking Account");
+                        }
+                    }
+                    if(accountType.contains("Savings") || accountType.equals("CD")){
+                        try {
+                            delete(savingsAccounts, accountNumber);
+                        } catch (IOException e) {
+                                System.out.println("Error Deleting Saving Account");
+                            }
                         }
                
                     DefaultListModel listModel = new DefaultListModel();
@@ -1001,10 +1014,10 @@ public class GUI extends JPanel {
 
     }
 
-    public void delete (List<Account> list, int num, String type) throws IOException{
+    public void delete (List<Account> list, int num) throws IOException{
         for(int i = 0; i < list.size(); i++){
             Account a = (Account)(list.get(i));
-            if((a.getAccountNumber() == num)&&(type.equals(a.getAccountType()) == true)){
+            if(a.getAccountNumber() == num){
                 System.out.println(list);
                 list.remove(i);
                 System.out.println(list);
