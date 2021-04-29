@@ -48,7 +48,7 @@ public class GUI extends JPanel {
     //Atm Sign In Components............................................................................................
     JPanel atmSignInLayout = new JPanel(new BorderLayout(5, 5));
     JPanel enteringPin = new JPanel(new GridLayout(1, 2, 5, 5));
-    JLabel pinLabel = new JLabel("Enter pin:");
+    JLabel pinLabel = new JLabel("Enter ID:");
     JTextField pinTextField = new JTextField();
     JButton enter = new JButton("Enter");
 
@@ -889,7 +889,7 @@ public class GUI extends JPanel {
                     gui.revalidate();
                     gui.repaint();
                 } else {
-                    JOptionPane.showMessageDialog(gui, "Please enter a valid pin", "Invalid Pin", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(gui, "Please enter a valid pin", "Invalid ID", JOptionPane.ERROR_MESSAGE);
                     pinTextField.setText("");
                 }
             }
@@ -1014,10 +1014,6 @@ public class GUI extends JPanel {
         accountList.addAll((savingsAccounts));// RW
     
         new GUI(checkingAccounts, savingsAccounts, loanAccounts, userList);
-        Database.SaveAccountData(savingsAccounts);
-        Database.SaveAccountData(checkingAccounts);
-        Database.SaveAccountData(loanAccounts);
-        System.out.println("Saved");
 
     }
 
@@ -1030,6 +1026,7 @@ public class GUI extends JPanel {
                 System.out.println(list);
             }
         }
+        Database.SaveAccountData(list);
     }
 
     public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, List<Account> loanAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber, int loanLength) throws IOException {
