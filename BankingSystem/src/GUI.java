@@ -1028,6 +1028,7 @@ public class GUI extends JPanel {
     public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, List<Account> loanAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber, int loanLength) throws IOException {
         int savingsAccountNumber = savingsAccounts.size() + 1;
         int checkingAccountNumber = checkingAccounts.size() + 1;
+        int loanAccountNumber = loanAccounts.size() + 1;
         double interestRate = 1;
         Calendar loanDueDate =  Calendar.getInstance();
         Date dueDate;
@@ -1035,22 +1036,22 @@ public class GUI extends JPanel {
         Date paymentNotifyDate = new Date(10-10-2021);
 
         if(accountType.equals("Savings")) {
-            savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date()));
+            savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date(),"no"));
             savingsAccountNumber++;
         } else if(accountType.equals("That's My Bank") || accountType.equals("Gold/Diamond")) {
             checkingAccounts.add(new CheckingAccount(customerId, checkingAccountNumber, accountType, currentBalance, backUpAccount, backUpAccountNumber, 0, new Date()));
             checkingAccountNumber++;
         } else if(accountType.equals("CD")) {
-            savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date()));
+            savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date(), "yes'"));
             savingsAccountNumber++;
         } else if(accountType.equals("Long Term Loan")) {
             loanDueDate.get((Calendar.YEAR) + loanLength);
             dueDate = loanDueDate.getTime();
-            loanAccounts.add(new LoanAccount(customerId, currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, accountType, false, new Date()));
+            loanAccounts.add(new LoanAccount(customerId, loanAccountNumber, currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, accountType, false, new Date()));
         } else if(accountType.equals("Short Term Loan")) {
             loanDueDate.get((Calendar.YEAR) + 5);
             dueDate = loanDueDate.getTime();
-            loanAccounts.add(new LoanAccount(customerId, currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, accountType, false, new Date()));
+            loanAccounts.add(new LoanAccount(customerId, loanAccountNumber,currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, accountType, false, new Date()));
         } else if(accountType.equals("Credit Card Loan")) {
 
         }
