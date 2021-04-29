@@ -1,20 +1,20 @@
-package Accounts;
-
-import Accounts.LoanAccount;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.Scanner;
 
 public class CreditCard extends LoanAccount {
     private double limit;
 
-    public CreditCard(int customerId, double currentBalance, double interestRate, Date paymentDueDate, Date paymentNotificationDate, double paymentAmountDue, String loanType, boolean missedPayment, Date lastPaymentDate, double limit) {
-        super(customerId, currentBalance, interestRate, paymentDueDate, paymentNotificationDate, paymentAmountDue, loanType, missedPayment, lastPaymentDate);
+    public CreditCard(int customerId, int accountNumber, double currentBalance, double interestRate, Date paymentDueDate, Date paymentNotificationDate, double paymentAmountDue, String loanType, boolean missedPayment, Date lastPaymentDate, double limit) {
+        super(customerId, accountNumber,currentBalance, interestRate, paymentDueDate, paymentNotificationDate, paymentAmountDue, loanType, missedPayment, lastPaymentDate);
         this.limit = limit;
     }
 @Override
-    public void paymentMade(int amount){
+    public void paymentMade(){
+    Scanner a = new Scanner(System.in);
+    String b = a.nextLine();
+    int amount = Integer.parseInt(b);
         currentBalance = currentBalance - amount;
         lastPaymentDate = new Date();
         Calendar c = Calendar.getInstance();
