@@ -68,7 +68,11 @@ public class LoanAccount extends Account{
     }
 
     public void setPaymentAmountDue(double paymentAmountDue) {
-        this.paymentAmountDue = paymentAmountDue;
+        double x= currentBalance;
+        double m= currentBalance/paymentAmountDue;
+        double y= m/12;
+        double r =interestRate;
+        this.paymentAmountDue=x/m+(x/2)*y*r/m;
     }
 
     public String getAccountType() {
