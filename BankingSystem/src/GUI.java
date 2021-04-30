@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,7 +10,6 @@ import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
 
 import Accounts.*;
 //Written by Cassidy Edson
@@ -447,27 +445,36 @@ public class GUI extends JPanel {
                 int accountNumber = Integer.parseInt(tellerAccount.substring(tellerAccount.indexOf(" ") + 1));
  
                 //Sets account to transfer to drop down and removes selected account from it
-                DefaultComboBoxModel model = new DefaultComboBoxModel(getAccountNumber(savingsAccounts, checkingAccounts, loanAccounts, customerID));
+                DefaultComboBoxModel model = new DefaultComboBoxModel(getAccountNumberWithoutLoans(savingsAccounts, checkingAccounts, customerID));
                 transferToCombo.setModel(model);
                 transferToCombo.removeItemAt(selectedIndex);
  
                 //Transfer pop up
-                JOptionPane.showConfirmDialog(gui, transferLayout, "Transfer", JOptionPane.OK_CANCEL_OPTION);
+                int result = JOptionPane.showConfirmDialog(gui, transferLayout, "Transfer", JOptionPane.OK_CANCEL_OPTION);
  
-                int transferAmount = Integer.parseInt(transferAmountText.getText());
-                String accountToTransferTo = transferToCombo.getSelectedItem().toString();
-                String accountTypeTransfer = accountToTransferTo.substring(0, accountToTransferTo.indexOf(" "));
-                int accountNumberTransfer = Integer.parseInt(accountToTransferTo.substring(accountToTransferTo.indexOf(" ") + 1));
- 
-                getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountTypeTransfer, accountNumberTransfer).deposit(transferAmount);
-                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(transferAmount);
+                try {
+                    double transferAmount = Double.parseDouble(transferAmountText.getText());
+                    String accountToTransferTo = transferToCombo.getSelectedItem().toString();
+                    String accountTypeTransfer = accountToTransferTo.substring(0, accountToTransferTo.indexOf(" "));
+                    int accountNumberTransfer = Integer.parseInt(accountToTransferTo.substring(accountToTransferTo.indexOf(" ") + 1));
 
-                getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).addRecentDebits("Transfer Out", Integer.toString(transferAmount));
+                    if(result == JOptionPane.OK_OPTION) {
+                        getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountTypeTransfer, accountNumberTransfer).deposit(transferAmount);
+                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(transferAmount);
+
+                        if(accountType.equals("Gold/Diamond") && 
+                          getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance() >= transferAmount + 1000) {
+                            getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).addRecentDebits("Transfer Out", Double.toString(transferAmount));
+                        }
+                    }
+                } catch(NumberFormatException e) {
+
+                }
  
                 //Not working
-                if(accountType.equals("Gold/Diamond") && getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).getCurrentBalance() - transferAmount < 1000) {
-                    JOptionPane.showMessageDialog(transferLayout, "You cannot withdraw more than the minimum balance", "Minimum Balance", JOptionPane.ERROR_MESSAGE);
-                }
+                // if(accountType.equals("Gold/Diamond") && getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).getCurrentBalance() - transferAmount < 1000) {
+                //     JOptionPane.showMessageDialog(transferLayout, "You cannot withdraw more than the minimum balance", "Minimum Balance", JOptionPane.ERROR_MESSAGE);
+                // }
 
                 //Updates account info panel
                 balanceLabel.setText("Balance: " + getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance());
@@ -600,27 +607,26 @@ public class GUI extends JPanel {
                     try {
                         String withdrawAmount = JOptionPane.showInputDialog(gui, "Withdraw Amount", "Withdraw", JOptionPane.QUESTION_MESSAGE);
                         if (withdrawAmount == null) { //If null exit loop
-                            System.out.println("null");
                             break;
                         } else if (withdrawAmount.matches("[0-9]*\\.?[0-9]*?")) { //If only numeric exit loop
                             withdrawnAmount = Double.parseDouble(withdrawAmount);
                             notNumeric = false;
+
+                            //Adds to recent debits
+                            if(accountType.equals("Long") || accountType.equals("Short")|| accountType.equals("Credit")){
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(0));
+
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(0);
+                            }
+                            else {
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount));
+
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
+                            }
                         }
                     } catch (NumberFormatException e) {
                         break;
                     }
-                }
-
-                //Adds to recent debits
-                if(accountType.equals("Long") || accountType.equals("Short")|| accountType.equals("Credit")){
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(0));
-
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(0);
-                }
-                else {
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount));
-
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
                 }
 
                 //Updates account info panel
@@ -775,7 +781,7 @@ public class GUI extends JPanel {
                 double currentBalance;
                 int backUpAccount;
                 int backUpAccountNumber;
-                int loanLength;
+                int loanLength = 0;
 
                 if(existingCustomerRadio.isSelected()) {
                     customerID = Integer.parseInt(existingCustomerIDText.getText());
@@ -783,23 +789,33 @@ public class GUI extends JPanel {
                     backUpAccount = Integer.parseInt(backUpAccountText2.getText());
                     backUpAccountNumber = Integer.parseInt(backUpAccountNumberText2.getText());
 
-                    loanTime = (String) loanTimeCombo2.getSelectedItem();
-                    loanLength = Integer.parseInt(loanTime.substring(0, loanTime.indexOf(" ")));
+                    if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan")) {
+                        loanTime = (String) loanTimeCombo2.getSelectedItem();
+                        loanLength = Integer.parseInt(loanTime.substring(0, loanTime.indexOf(" ")));
+                    }
                 } else {
                     customerID = Integer.parseInt(ssnText.getText());
                     currentBalance = Double.parseDouble(startingBalanceTextNew.getText());
                     backUpAccount = Integer.parseInt(backUpAccountText.getText());
                     backUpAccountNumber = Integer.parseInt(backUpAccountNumberText.getText());
 
-                    loanTime = (String) loanTimeCombo.getSelectedItem();
-                    loanLength = Integer.parseInt(loanTime.substring(0, loanTime.indexOf(" ")));
+                    if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan")) {
+                        loanTime = (String) loanTimeCombo2.getSelectedItem();
+                        loanLength = Integer.parseInt(loanTime.substring(0, loanTime.indexOf(" ")));
+                    }
                 }
 
                 try {
-                        createNewAccount(savingsAccounts, checkingAccounts, loanAccounts, type, customerID, currentBalance, backUpAccount, backUpAccountNumber, loanLength);
+                    createNewAccount(savingsAccounts, checkingAccounts, loanAccounts, type, customerID, currentBalance, backUpAccount, backUpAccountNumber, loanLength);
                 } catch (IOException e) {
                     System.out.println("Exception in Create New Account (Submit button)");
                 }
+
+                System.out.println("Trying to return to teller");
+                gui.getContentPane().removeAll();
+                gui.add(tellerLayout);
+                gui.revalidate();
+                gui.repaint();
             }
         });
 
@@ -808,7 +824,7 @@ public class GUI extends JPanel {
                 String loanType = (String) accountType.getSelectedItem();
                 String[] loanTime = new String[] {"15 yrs", "30yrs"};
 
-                if(loanType.equals("Long")) {
+                if(loanType.equals("Long Term Loan")) {
                     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(loanTime);
                     loanTimeCombo.setModel(model);
                     loanTimeCombo.enable();
@@ -928,23 +944,22 @@ public class GUI extends JPanel {
                         } else if (withdrawAmount.matches("^[0-9]*$")) { //If only numeric exit loop
                             withdrawnAmount = Integer.parseInt(withdrawAmount);
                             notNumeric = false;
+                            if(getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).overWithdrawLimit()) {
+                                System.out.println("Withdrawing");
+                                //Adds to recent debits
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Integer.toString(withdrawnAmount));
+            
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
+            
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addWithdrawnToday();;
+                            } else {
+                                JOptionPane.showMessageDialog(gui, "You can only make 2 withdraws at day from the ATM", "Withdraw Limit", JOptionPane.ERROR_MESSAGE);
+                            }
                         }
                     } catch (NumberFormatException e) { //Break look if user hits ok without any input
                         System.out.println("no input");
                         break;
                     }
-                }
-                
-                if(getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).overWithdrawLimit()) {
-                    System.out.println("Withdrawing");
-                    //Adds to recent debits
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Integer.toString(withdrawnAmount));
-
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
-
-                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addWithdrawnToday();;
-                } else {
-                    JOptionPane.showMessageDialog(gui, "You can only make 2 withdraws at day from the ATM", "Withdraw Limit", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -1084,6 +1099,27 @@ public class GUI extends JPanel {
         for(int i = 0; i < loanAccounts.size(); i++) {
             if(loanAccounts.get(i).getCustomerId() == customerId) {
                 accountTypes.add(loanAccounts.get(i).getAccountType() + " " + Integer.toString(loanAccounts.get(i).getAccountNumber()));
+            }
+        }
+
+        accountTypesReturn = accountTypes.toArray(new String[0]);
+
+        return accountTypesReturn;
+    }
+
+    public String[] getAccountNumberWithoutLoans(List<Account> savingsAccounts, List<Account> checkingAccounts, int customerId) {
+        ArrayList<String> accountTypes = new ArrayList<>();
+        String[] accountTypesReturn;
+
+        for(int i = 0; i < savingsAccounts.size(); i++) {
+            if(savingsAccounts.get(i).getCustomerId() == customerId) {
+                accountTypes.add(savingsAccounts.get(i).getAccountType() + " " + Integer.toString(savingsAccounts.get(i).getAccountNumber()));
+            }
+        }
+
+        for(int i = 0; i < checkingAccounts.size(); i++) {
+            if(checkingAccounts.get(i).getCustomerId() == customerId) {
+                accountTypes.add(checkingAccounts.get(i).getAccountType() + " " + Integer.toString(checkingAccounts.get(i).getAccountNumber()));
             }
         }
 

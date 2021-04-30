@@ -35,7 +35,7 @@ public class SavingsAccount extends Account {
                 {
                         Integer.toString(customerId), Integer.toString(accountNumber),
                         Double.toString(currentBalance), Double.toString(interestRate),
-                        formatter.format(dateOpened)
+                        formatter.format(dateOpened), isCD
                 };
     }
 
