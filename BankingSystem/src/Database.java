@@ -124,7 +124,8 @@ public class Database { // This is our Banking System Database
     // We can save whatever accounts
     public static void SaveAccountData(List<Account> accounts) throws IOException {
         File file = new File("");
-        System.out.println("Debug");
+        FileWriter writer;
+        System.out.println("Saving Account Data");
         ArrayList<String[]> loanRecords = new ArrayList<String[]>();
         ArrayList<String[]> savingRecords = new ArrayList<String[]>();
         ArrayList<String[]> CheckingRecords = new ArrayList<String[]>();
@@ -137,8 +138,9 @@ public class Database { // This is our Banking System Database
                 CheckingRecords.add(account.accountToArray());
             }
         }
-        file = new File("BankingSystem\\src\\Database\\loanAccounts1.txt");
-        FileWriter writer = new FileWriter(file);
+        if(loanRecords.size() > 0){
+        file = new File("BankingSystem\\src\\Database\\loanAccounts.txt");
+        writer = new FileWriter(file);
 
         for (var record : loanRecords) {
             writer.append(String.join(",", record));
@@ -146,8 +148,9 @@ public class Database { // This is our Banking System Database
         }
         writer.flush();
         writer.close();
-
-        file = new File("BankingSystem\\src\\Database\\savingsAccounts1.txt");
+    }
+        if(savingRecords.size() > 0){
+        file = new File("BankingSystem\\src\\Database\\savingsAccounts.txt");
         writer = new FileWriter(file);
 
         for (var record : savingRecords) {
@@ -156,15 +159,17 @@ public class Database { // This is our Banking System Database
         }
         writer.flush();
         writer.close();
+    }
+        if(CheckingRecords.size() > 0){
+            file = new File("BankingSystem\\src\\Database\\checkingAccounts.txt");
+            writer = new FileWriter(file);
 
-        file = new File("BankingSystem\\src\\Database\\checkingAccounts1.txt");
-        writer = new FileWriter(file);
-
-        for (var record : CheckingRecords) {
-            writer.append(String.join(",", record));
-            writer.append("\n");
+            for (var record : CheckingRecords) {
+                writer.append(String.join(",", record));
+                writer.append("\n");
+            }
+            writer.flush();
+            writer.close();
         }
-        writer.flush();
-        writer.close();
     }
 }
