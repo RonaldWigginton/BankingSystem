@@ -14,6 +14,7 @@ public class CheckingAccount extends Account {
     private int overdrafts;
     private Date dateOpened;
     private double interestRate;
+    private boolean useBackup;
 
     public CheckingAccount(int customerId, int accountNumber, String accountType, double currentBalance,
                            int backupAccount, int backupAccountNumber, int overDrafts, Date dateOpened)
@@ -43,13 +44,22 @@ public class CheckingAccount extends Account {
 
     }
 
+    public boolean getUseBackup() {
+        return useBackup;
+    }
+
     public double withdraw(double amount){
         //withdraw money
-        if(accountType.equals("Gold/Diamond") && currentBalance >= amount + 1000) {
+        if(currentBalance >= amount) {
             currentBalance-=amount;
+            useBackup = false;
+            return currentBalance;
+        } else if(backupAccount == 1) {
+            JOptionPane.showMessageDialog(null, "Withdrawing from backup account", "Backup Account", JOptionPane.ERROR_MESSAGE);
+            useBackup = true;
             return currentBalance;
         } else {
-            JOptionPane.showMessageDialog(null, "You cannot withdraw more than the minimum balance", "Minimum Balance", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "You do not have enough money to make this withdraw", "Balance Too Low", JOptionPane.ERROR_MESSAGE);
             return currentBalance;
         }
     }
