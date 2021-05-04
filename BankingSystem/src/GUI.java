@@ -649,7 +649,7 @@ public class GUI extends JPanel {
                                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
                                 System.out.println("First withdraw");
 
-                                if(getCheckingAccount(checkingAccounts, accountNumber).getUseBackup()) { //Check if need to use backup
+                                if((accountType.equals("Gold/Diamond") || accountType.equals("TMB")) && getCheckingAccount(checkingAccounts, accountNumber).getUseBackup()) { //Check if need to use backup
                                     System.out.println("Backup Withdraw");
                                     //Check amount needed from backup
                                     backupAccountWithdraw = withdrawnAmount - getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance();
