@@ -726,7 +726,7 @@ public class GUI extends JPanel {
                     tellerAccountList.setModel(listModel);
                     gui.revalidate();
                     gui.repaint();
-
+                    searchTeller.doClick();
                 }
             }
         });
@@ -885,7 +885,6 @@ public class GUI extends JPanel {
                 } catch (IOException e) {
                     System.out.println("Exception in Create New Account (Submit button)");
                 }
-<<<<<<< HEAD
                 // Save
                 try {
                     Database.SaveAccountData(savingsAccounts);
@@ -897,14 +896,13 @@ public class GUI extends JPanel {
                     e.printStackTrace();
                 }
                 
-=======
 
                 System.out.println("Trying to return to teller");
                 gui.getContentPane().removeAll();
                 gui.add(tellerLayout);
                 gui.revalidate();
                 gui.repaint();
->>>>>>> e18b50109c9743203c9fb3b882ebf0b19357f364
+                searchTeller.doClick();
             }
         });
 
@@ -1077,7 +1075,6 @@ public class GUI extends JPanel {
                         break;
                     }
                 }
-<<<<<<< HEAD
                 
                 if(getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).overWithdrawLimit()) {
                     System.out.println("Withdrawing");
@@ -1099,8 +1096,6 @@ public class GUI extends JPanel {
 
                 }
                
-=======
->>>>>>> e18b50109c9743203c9fb3b882ebf0b19357f364
             }
         });
 
@@ -1131,7 +1126,6 @@ public class GUI extends JPanel {
 
                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).deposit(depositedAmount);
                 System.out.println(depositedAmount);
-<<<<<<< HEAD
                 try{
                 Database.SaveAccountData(loanAccounts);
                 Database.SaveAccountData(checkingAccounts);
@@ -1140,8 +1134,6 @@ public class GUI extends JPanel {
                 } catch(Exception ex){
                     
                 }
-=======
->>>>>>> e18b50109c9743203c9fb3b882ebf0b19357f364
             }
         });
 
