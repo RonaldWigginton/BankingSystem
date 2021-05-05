@@ -25,10 +25,11 @@ public class LoanAccount extends Account{
         this.interestRate = interestRate;
         this.paymentDueDate = paymentDueDate;
         this.paymentNotificationDate = paymentNotificationDate;
-        this.paymentAmountDue = paymentAmountDue;
+        setPaymentAmountDue(paymentAmountDue);
         this.accountType = loanType;
         this.missedPayment = missedPayment;
         this.lastPaymentDate = lastPaymentDate;
+        this.type = loanType;
         setStatus(0);
         pastDue();
 
