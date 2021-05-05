@@ -803,6 +803,7 @@ public class GUI extends JPanel {
                     Database.SaveAccountData(savingsAccounts);
                     Database.SaveAccountData(checkingAccounts);
                     Database.SaveAccountData(loanAccounts);
+                    Database.SaveUserData(userList);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -958,6 +959,7 @@ public class GUI extends JPanel {
                     Database.SaveAccountData(loanAccounts);
                     Database.SaveAccountData(checkingAccounts);
                     Database.SaveAccountData(savingsAccounts);
+                    Database.SaveUserData(userList);
                 } catch(Exception e){
 
                 }
@@ -996,6 +998,7 @@ public class GUI extends JPanel {
                 Database.SaveAccountData(loanAccounts);
                 Database.SaveAccountData(checkingAccounts);
                 Database.SaveAccountData(savingsAccounts);
+                Database.SaveUserData(userList);
                 } catch(Exception ex){
                     
                 }
@@ -1048,7 +1051,7 @@ public class GUI extends JPanel {
                 System.out.println(list);
             }
         }
-        Database.SaveAccountData(list); // fix
+        Database.SaveAccountData(list);
     }
 
     public void createNewAccount(List<Account> savingsAccounts, List<Account> checkingAccounts, List<Account> loanAccounts, String accountType, int customerId, double currentBalance, int backUpAccount, int backUpAccountNumber, int loanLength) throws IOException {
