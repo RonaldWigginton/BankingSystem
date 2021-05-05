@@ -1,3 +1,5 @@
+package Accounts;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -36,4 +38,17 @@ public class CreditCard extends LoanAccount {
         double result = r.nextInt(high-low) + low;
         return result;
     }
+    @Override
+    public double withdraw(double amount){
+        if(accountType.equals("Credit")){
+            if((currentBalance+amount)<=limit)
+                currentBalance+=amount;
+            return currentBalance;
+        }
+        else {
+            System.out.println("Account is over limit");
+        }
+        return currentBalance;
+    }
 }
+

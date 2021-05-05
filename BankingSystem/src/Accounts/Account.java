@@ -67,10 +67,9 @@ public class Account {
         String date = dateFormat.format(todaysDate);
 
         //Adds new row
-        if(currentBalance >= Double.parseDouble(amount)) {
         DefaultTableModel model = (DefaultTableModel) recentDebits.getModel();
         model.addRow(new Object[]{type, amount, date});
-        }
+        
     }
     
     public void setStatus(int curOrbeh){

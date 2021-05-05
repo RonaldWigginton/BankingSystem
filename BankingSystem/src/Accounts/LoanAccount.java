@@ -25,10 +25,11 @@ public class LoanAccount extends Account{
         this.interestRate = interestRate;
         this.paymentDueDate = paymentDueDate;
         this.paymentNotificationDate = paymentNotificationDate;
-        this.paymentAmountDue = paymentAmountDue;
+        setPaymentAmountDue(paymentAmountDue);
         this.accountType = loanType;
         this.missedPayment = missedPayment;
         this.lastPaymentDate = lastPaymentDate;
+        this.type = loanType;
         setStatus(0);
         pastDue();
 
@@ -134,7 +135,14 @@ public class LoanAccount extends Account{
     }
     @Override
     public double withdraw(double amount){
-        System.out.println("Cannot withdraw from loan account.");
+        if(accountType.equals("Credit")){
+            if(currentBalance>=amount)
+                currentBalance+=amount;
+            return currentBalance;
+        }
+        else {
+            System.out.println("Cannot withdraw from loan account.");
+        }
         return currentBalance;
     }
 }
