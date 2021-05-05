@@ -640,7 +640,7 @@ public class GUI extends JPanel {
                             notNumeric = false;
 
                             //Adds to recent debits
-                            if(accountType.equals("Long") || accountType.equals("Short")|| accountType.equals("Credit")){
+                            if(accountType.equals("Long") || accountType.equals("Short")){
                                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(0));
 
                                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(0);
@@ -847,7 +847,7 @@ public class GUI extends JPanel {
                     // backUpAccountNumber = Integer.parseInt(backUpAccountNumberText2.getText());
                     // cardLimit = Double.parseDouble(cardLimitText2.getText());
 
-                    if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan") || accountType.equals("Credit Card Loan")) {
+                    if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan") || accountType.equals("Short") || accountType.equals("Long") || accountType.equals("Credit")) {
                         loanTime = (String) loanTimeCombo2.getSelectedItem();
                         loanLength = Integer.parseInt(loanTime.substring(0, loanTime.indexOf(" ")));
 
@@ -874,7 +874,7 @@ public class GUI extends JPanel {
                     //Creates new user and adds to userList
                     userList.add(new CustomerATM(customerID, streetAddress, city, state, zip, first, last));
 
-                    if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan")) {
+                    if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan") || accountType.equals("Short") || accountType.equals("Long") || accountType.equals("Credit")) {
                         loanTime = (String) loanTimeCombo2.getSelectedItem();
                         loanLength = Integer.parseInt(loanTime.substring(0, loanTime.indexOf(" ")));
                     }
@@ -899,7 +899,7 @@ public class GUI extends JPanel {
                 String accountTypeSelected = (String) accountType.getSelectedItem();
                 String[] loanTime = new String[] {"15 yrs", "30yrs"};
 
-                if(accountTypeSelected.equals("Long Term Loan")) {
+                if(accountTypeSelected.equals("Long Term Loan")||accountTypeSelected.equals("Long")) {
                     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(loanTime);
                     loanTimeCombo.setModel(model);
                     loanTimeCombo.enable();
@@ -923,8 +923,7 @@ public class GUI extends JPanel {
                      gui.repaint();
                 }
 
-                if(accountTypeSelected.equals("That's My Bank") || accountTypeSelected.equals("Gold/Diamond") || accountTypeSelected.equals("Credit Card Loan")) {
-                    backUpAccountText.enable();
+                if(accountType.equals("Short Term Loan") || accountType.equals("Long Term Loan") || accountType.equals("Credit Card Loan") || accountType.equals("Short") || accountType.equals("Long") || accountType.equals("Credit")) {
                     backUpAccountNumberText.enable();
 
                     backUpAccountText2.enable();
@@ -937,7 +936,7 @@ public class GUI extends JPanel {
                     backUpAccountNumberText2.disable();
                 }
 
-                if(accountTypeSelected.equals("Credit Card Loan")) {
+                if(accountTypeSelected.equals("Credit Card Loan")||accountTypeSelected.equals("Credit")) {
                     cardLimitText.enable();
                     cardLimitText2.enable();
                 } else {
@@ -1043,12 +1042,18 @@ public class GUI extends JPanel {
                             notNumeric = false;
                             if(getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).overWithdrawLimit()) {
                                 System.out.println("Withdrawing");
-                                //Adds to recent debits
-                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Integer.toString(withdrawnAmount));
-            
-                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
-            
-                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addWithdrawnToday();;
+                                //Adds to
+                                if(accountType.equals("Long") || accountType.equals("Short")){
+                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(0));
+
+                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(0);
+                                }
+                                else {
+                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).addRecentDebits("Withdraw", Integer.toString(withdrawnAmount));
+                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).withdraw(withdrawnAmount);
+                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts, accountType, accountNumber).addWithdrawnToday();
+                                    ;
+                                }
                             } else {
                                 JOptionPane.showMessageDialog(gui, "You can only make 2 withdraws at day from the ATM", "Withdraw Limit", JOptionPane.ERROR_MESSAGE);
                             }
@@ -1174,15 +1179,15 @@ public class GUI extends JPanel {
         } else if(accountType.equals("CD")) {
             savingsAccounts.add(new SavingsAccount(customerId, savingsAccountNumber, currentBalance, interestRate, new Date(), "yes'"));
             savingsAccountNumber++;
-        } else if(accountType.equals("Long Term Loan")) {
+        } else if(accountType.equals("Long Term Loan")||accountType.equals("Long")) {
             loanDueDate.get((Calendar.YEAR) + loanLength);
             dueDate = loanDueDate.getTime();
             loanAccounts.add(new LoanAccount(customerId, loanAccountNumber, currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, "Long", false, new Date()));
-        } else if(accountType.equals("Short Term Loan")) {
+        } else if(accountType.equals("Short Term Loan")||accountType.equals("Short")) {
             loanDueDate.get((Calendar.YEAR) + 5);
             dueDate = loanDueDate.getTime();
             loanAccounts.add(new LoanAccount(customerId, loanAccountNumber,currentBalance, interestRate, dueDate, paymentNotifyDate, currentBalance, "Short", false, new Date()));
-        } else if(accountType.equals("Credit Card Loan")) {
+        } else if(accountType.equals("Credit Card Loan")||accountType.equals("Credit")) {
             creditCardDueDate.get((Calendar.MONTH) + 1);
             System.out.println(creditCardDueDate);
             dueDate = creditCardDueDate.getTime();
