@@ -53,13 +53,16 @@ public class CheckingAccount extends Account {
         if(currentBalance >= amount) {
             currentBalance-=amount;
             useBackup = false;
+            upgrade();
             return currentBalance;
         } else if(backupAccount == 1) {
             JOptionPane.showMessageDialog(null, "Withdrawing from backup account", "Backup Account", JOptionPane.ERROR_MESSAGE);
             useBackup = true;
+            upgrade();
             return currentBalance;
         } else {
             JOptionPane.showMessageDialog(null, "You do not have enough money to make this withdraw", "Balance Too Low", JOptionPane.ERROR_MESSAGE);
+            upgrade();
             return currentBalance;
         }
     }
@@ -110,5 +113,19 @@ public class CheckingAccount extends Account {
 
     public void setDateOpened(Date dateOpened) {
         this.dateOpened = dateOpened;
+    }
+    public void upgrade(){
+        if(accountType.equals("TMB")&&currentBalance >=1000){
+            accountType=("Gold/Diamond");
+        }
+        if(accountType.equals("Gold/Diamond")&&currentBalance <1000){
+            accountType=("TMB");
+        }
+    }
+    @Override
+    public double deposit(double amount){
+        currentBalance+=amount;
+        upgrade();
+        return currentBalance;
     }
 }
