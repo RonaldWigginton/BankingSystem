@@ -32,6 +32,7 @@ public class LoanAccount extends Account{
         this.type = loanType;
         setStatus(0);
         pastDue();
+        Notify();
 
     }
 
