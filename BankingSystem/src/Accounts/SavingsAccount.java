@@ -19,7 +19,7 @@ public class SavingsAccount extends Account {
         this.interestRate = interestRate;
         this.dateOpened=dateOpened;
         this.isCD=isCD;
-        if(isCD.equals("yes")&& dateOpened.equals(new Date())){
+        if(isCD.equals("yes")){
             Calendar date= Calendar.getInstance();
             date.setTime(dateOpened);
             date.add(Calendar.DATE,90);
@@ -55,21 +55,18 @@ public class SavingsAccount extends Account {
         this.dateOpened = dateOpened;
     }
     public String getAccountType() {
-        if(this.isCD.equals("no")){
-            return "Savings";
-        }
-        else{
-            return "CD";
-        }
+        return "Savings";
+
     }
     @Override
     public double withdraw(double amount) {
+        Date d = new Date();
         //withdraw money
         if (currentBalance >= amount) {
             currentBalance -= amount;
         }
         if(isCD.equals("yes")){
-            if(new Date().before(CD)){
+            if(d.before(CD)){
                 Calendar date= Calendar.getInstance();
                 date.setTime(CD);
                 date.add(Calendar.DATE,90);
