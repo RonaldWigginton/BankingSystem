@@ -619,7 +619,7 @@ public class GUI extends JPanel {
         });
 
         //Withdraws money from selected account in Teller Interface
-        withdrawTellerButton.addActionListener(new java.awt.event.ActionListener() {
+         withdrawTellerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 double withdrawnAmount = 0;
                 boolean notNumeric = true;
@@ -640,7 +640,7 @@ public class GUI extends JPanel {
                             notNumeric = false;
 
                             //Adds to recent debits
-                            if(accountType.equals("Long") || accountType.equals("Short")){
+                            if(accountType.equals("Long") || accountType.equals("Short")|| accountType.equals("Credit")){
                                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(0));
 
                                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(0);
@@ -649,26 +649,41 @@ public class GUI extends JPanel {
                                 getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount);
                                 System.out.println("First withdraw");
 
-                                if((accountType.equals("Gold/Diamond") || accountType.equals("TMB")) && getCheckingAccount(checkingAccounts, accountNumber).getUseBackup()) { //Check if need to use backup
-                                    System.out.println("Backup Withdraw");
-                                    //Check amount needed from backup
-                                    backupAccountWithdraw = withdrawnAmount - getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance();
-                                    System.out.println(backupAccountWithdraw);
+                                if(accountType.equals("TMB") || accountType.equals("Gold/Diamond")) {
+                                    if(getCheckingAccount(checkingAccounts, accountNumber).getUseBackup()) { //Check if need to use backup
+                                        System.out.println("Backup Withdraw");
+                                        //Check amount needed from backup
+                                        backupAccountWithdraw = withdrawnAmount - getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).getCurrentBalance();
+                                        System.out.println(backupAccountWithdraw);
+                                        double originalWithdraw = withdrawnAmount - backupAccountWithdraw;
+                                        System.out.println(originalWithdraw);
 
-                                    backupAccount = getCheckingAccount(checkingAccounts, accountNumber).getBackupAccountNumber();
-                                    System.out.println(backupAccount);
-                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,"Savings", backupAccount).withdraw(backupAccountWithdraw); //Withdraws from backup
-                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(withdrawnAmount - backupAccountWithdraw); //Withdraws from original
-                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,"Savings", backupAccount).addRecentDebits("Withdraw", Double.toString(backupAccountWithdraw)); //Adds withdraw to backup
-                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount - backupAccountWithdraw));
-                                } else { //You can add original withdraw
-                                    System.out.println("First withdraw recent debits");
-                                    getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount)); //Adds withdraw to original
+                                        backupAccount = getCheckingAccount(checkingAccounts, accountNumber).getBackupAccountNumber();
+                                        System.out.println(backupAccount);
+                                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,"Savings", backupAccount).withdraw(backupAccountWithdraw); //Withdraws from backup
+                                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).withdraw(originalWithdraw); //Withdraws from original
+                                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,"Savings", backupAccount).addRecentDebits("Withdraw", Double.toString(backupAccountWithdraw)); //Adds withdraw to backup
+                                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount - backupAccountWithdraw));
+                                    } else { //You can add original withdraw
+                                        System.out.println("First withdraw recent debits");
+                                        getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", Double.toString(withdrawnAmount)); //Adds withdraw to original
+                                    }
                                 }
+                                getAccount(savingsAccounts, checkingAccounts, loanAccounts,accountType, accountNumber).addRecentDebits("Withdraw", withdrawAmount);
+
                             }
                         }
                     } catch (NumberFormatException e) {
                         break;
+                    }
+                    try {
+                        Database.SaveAccountData(savingsAccounts);
+                        Database.SaveAccountData(checkingAccounts);
+                        Database.SaveAccountData(loanAccounts);
+                        Database.SaveUserData(userList);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
                 }
 
