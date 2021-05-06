@@ -49,6 +49,9 @@ public class CheckingAccount extends Account {
     }
 
     public double withdraw(double amount){
+        if(accountType.equals("TMB")){
+            amount += 0.75;
+        }
         //withdraw money
         if(currentBalance >= amount) {
             currentBalance-=amount;
@@ -124,6 +127,9 @@ public class CheckingAccount extends Account {
     }
     @Override
     public double deposit(double amount){
+        if(accountType.equals("TMB")){
+            amount -= 0.75;
+        }
         currentBalance+=amount;
         upgrade();
         return currentBalance;
